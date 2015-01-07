@@ -50,6 +50,8 @@ class PXP_Admin_Menus
 		$pxp_orders			= add_users_page( 'Orders', 'Orders', 'read', 'pxp-client-orders', array( $this, 'client_order') );
 		
 		$pxp_transactions 	= add_users_page( 'Transaction History', 'Transaction History', 'read', 'pxp-client-transactions', array( $this, 'client_transactions') );
+		
+		$pxp_credit_adjustments = add_menu_page('Credit Adjustments', 'Credit Adjustments', 'create_users', 'credit-adjustments', array($this, 'credit_adjustments'), 'dashicons-admin-users', 72);
 				
 		
 		if( isset( $_GET['page'] ) ):
@@ -175,6 +177,11 @@ class PXP_Admin_Menus
 	public function client_list()
 	{
 		PXP_Admin::pxp_admin_clients();
+	}
+	
+	public function  credit_adjustments()
+	{
+		PXP_Admin::adjust_credits();
 	}
 }
 
