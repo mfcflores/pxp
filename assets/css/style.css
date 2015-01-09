@@ -1,0 +1,161 @@
+* {
+    box-sizing: border-box;
+}
+
+#pxp-credits-page {
+	margin: 0px; 
+	padding-right: 20px;
+
+}
+
+.pxp-credit-box{
+	margin: auto;
+	width: 90%;
+	padding-left: 10px;
+	padding-right: 10px;
+	/*margin-top:20px;*/
+	margin-left: auto;
+	margin-right: auto;
+	float: left;
+}
+
+.pxp-credit-column50{
+	float: left;
+	width: 50%;
+}
+
+#pxp-credits {
+	margin: 20px auto;
+	width: 100%;
+}
+
+.pxp-credit {
+	float: left;
+	width: 29%;
+	border: 1px solid #777;
+	border-radius: 5px;
+	margin-right: 20px;
+	margin-left: 20px;
+	margin-top: 20px;
+}
+
+.pxp-credit .row {
+	border-bottom: 1px solid #777;
+}
+
+.pxp-credit #content {
+	padding: 50px 0px;
+}
+
+#pxp-titleHeader div {
+	float: left;
+	width: 50%;
+}
+
+.pxp-credit .btn {
+	margin: 10px auto;
+	width: 75%;
+	padding: 10px 16px;
+	font-size: 20px;
+	line-height: 1.33;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.text-left {
+	text-align: left;
+}
+
+#pxp_product_gallery:after {
+	clear: both;
+}
+
+.pxp_product_gallery .pxp_product_image {
+	padding: 0px 5px !important;
+	position: relative;
+	min-height: 1px;
+	float: left;
+	width: 33.33333333%;
+	line-height: 0px;
+	border-radius: 4px;
+}
+
+.pxp_product_gallery .pxp_product_image img{
+	width: 100%;
+	padding: 0px !important;
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1) inset;
+	border: 1px solid #DDD;
+	height: auto;
+	display: block;
+}
+
+.pxp_product_gallery .pxp_product_image img:hover {
+	cursor: pointer;
+}
+
+.pxp_product_image .actions:before {
+	content: " ";
+	display: table;
+}
+
+#pxp_product_gallery_container ul li:hover ul.actions  {
+	display: block;
+}
+
+.pxp_product_image .actions {
+	position: absolute;
+	top: -6px;
+	right: -2px;
+	display: none;
+}
+
+.pxp_product_image .actions a.remove {
+	background-color: #000;
+	color: #FFF;
+	padding: 0px 4px;
+	border-radius: 50%;
+	border: 1px solid #DDD;
+}
+
+.ui-product-sort-placeholder {
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	border: 3px dashed #ddd;
+	position:relative;
+	width: 33.33333333%;
+	float: left;
+}
+
+.ui-product-sort-placeholder:after {
+	font-weight:400;
+	font-variant:normal;
+	text-transform:none;
+	-webkit-font-smoothing:antialiased;
+	margin:0;
+	text-indent:0;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	text-align:center;
+	font-size:2.618em;
+	line-height:72px;
+	color:#ddd
+}
+
+.product_image.column-product_image  {
+	text-align: center;
+}
+
+.product_image.column-product_image img  {
+	width: 80%;
+	height: auto;
+}
