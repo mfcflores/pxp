@@ -45,6 +45,8 @@ class PXP_Roles
 			$role->add_cap( 'edit_others_pxp_products' );
 			$role->add_cap( 'edit_published_pxp_products' );
 			$role->add_cap( 'publish_pxp_products' );
+			$role->add_cap( 'delete_pxp_product' );
+			$role->add_cap( 'delete_pxp_products' );
 			$role->add_cap( 'delete_others_pxp_products' );
 			$role->add_cap( 'delete_private_pxp_products' );
 			$role->add_cap( 'delete_published_pxp_products' );
@@ -55,3 +57,5 @@ class PXP_Roles
 }
 
 return new PXP_Roles();
+
+?>

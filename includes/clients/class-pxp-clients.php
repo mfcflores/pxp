@@ -390,3 +390,5 @@ class PXP_Clients
 }
 
 return new PXP_Clients();
+
+?>

@@ -21,6 +21,7 @@ class PXP_Cpt
 	public function __construct()
 	{
 		add_action( 'init', array( $this, 'pxp_register_post_types' ), 5 );
+		add_action( 'init', array( $this, 'pxp_register_taxonomies' ), 5 );
 		
 		add_action( 'add_meta_boxes', array( $this, 'pxp_add_meta_boxes' ) );
 	}
@@ -57,7 +58,7 @@ class PXP_Cpt
 
 			$args = array(
 				'labels'             => $labels,
-				'public'             => true,
+				'public'             => false,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'show_in_menu'       => true,
@@ -77,6 +78,7 @@ class PXP_Cpt
 			
 			if( $key == "product" )
 			{
+				$args['public']				= true;
 				$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
 				$args['map_meta_cap']		= true;
 			}
@@ -87,6 +89,75 @@ class PXP_Cpt
 		}
 	}
 	
+	/**
+	 * Register Custom Taxonomies.
+	 */
+	public function pxp_register_taxonomies()
+	{	
+		$labels = array(
+			'name'                       => _x( 'Product Categories', 'taxonomy general name' ),
+			'singular_name'              => _x( 'Product Category', 'taxonomy singular name' ),
+			'search_items'               => __( 'Search Categories' ),
+			'popular_items'              => __( 'Popular Category' ),
+			'all_items'                  => __( 'All Categories' ),
+			'parent_item'                => null,
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Category' ),
+			'update_item'                => __( 'Update Category' ),
+			'add_new_item'               => __( 'Add New Category' ),
+			'new_item_name'              => __( 'New Category Name' ),
+			'separate_items_with_commas' => __( 'Separate tags with commas' ),
+			'add_or_remove_items'        => __( 'Add or remove category' ),
+			'choose_from_most_used'      => __( 'Choose from the most used tags' ),
+			'not_found'                  => __( 'No category found.' ),
+			'menu_name'                  => __( 'Product Category' ),
+		);
+
+		$args = array(
+			'hierarchical'          => true,
+			'labels'                => $labels,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'product_category' ),
+		);
+
+		register_taxonomy( 'pxp_product_categories', 'pxp_products', $args );
+		
+		$labels = array(
+			'name'                       => _x( 'Product Tags', 'taxonomy general name' ),
+			'singular_name'              => _x( 'Tag', 'taxonomy singular name' ),
+			'search_items'               => __( 'Search Tags' ),
+			'popular_items'              => __( 'Popular Tag' ),
+			'all_items'                  => __( 'All Tags' ),
+			'parent_item'                => null,
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Tag' ),
+			'update_item'                => __( 'Update Tag' ),
+			'add_new_item'               => __( 'Add New Tag' ),
+			'new_item_name'              => __( 'New Category Name' ),
+			'separate_items_with_commas' => __( 'Separate tags with commas' ),
+			'add_or_remove_items'        => __( 'Add or remove tag' ),
+			'choose_from_most_used'      => __( 'Choose from the most used tags' ),
+			'not_found'                  => __( 'No tag found.' ),
+			'menu_name'                  => __( 'Product Tags' ),
+		);
+
+		$args = array(
+			'hierarchical'          => true,
+			'labels'                => $labels,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'product_tags' ),
+		);
+
+		register_taxonomy( 'pxp_product_tags', 'pxp_products', $args );
+	}
+	
+	/**
+	 * Initiate meta boxes of post types.
+	 */
 	public function pxp_add_meta_boxes()
 	{
 		// PXP Orders Meta Boxes
@@ -103,3 +174,5 @@ class PXP_Cpt
 }
 
 return new PXP_Cpt();
+
+?>

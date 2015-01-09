@@ -102,8 +102,8 @@ final class PixelPartners
 		// Client side page
 		include_once( 'includes/clients/class-pxp-clients.php' );
 		
-		// Include plugin library
-		include_once( 'lib/class-pxp-library.php' );
+		// Include plugin helper functions
+		include_once( 'lib/pxp_helpers.php' );
 	}
 	
 	/**

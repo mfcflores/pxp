@@ -31,14 +31,19 @@ class PXP_Admin_Assets
 		global $post;
 		
 		wp_enqueue_script	( 'jquery' );
+		wp_enqueue_script	( 'jquery-ui-core' );
+		wp_enqueue_script	( 'jquery-ui-sortable' );
 		
 		
 		if( isset( $post ) && $post->post_type == "pxp_products" )
 		{
-			$this->pxp_initiate_bootstrap( $hook );
+			//$this->pxp_initiate_bootstrap( $hook );
 			
 			wp_enqueue_media();
 		}
+		
+		wp_register_style	( 'pxp-fontawesome', PXP_URL . '/assets/css/font-awesome.min.css' );
+		wp_enqueue_style	( 'pxp-fontawesome' );
 		
 		wp_register_style	( 'pxp-style', PXP_URL . '/assets/css/style.css' );
 		wp_enqueue_style	( 'pxp-style' );
@@ -68,3 +73,5 @@ class PXP_Admin_Assets
 }
 
 new PXP_Admin_Assets();
+
+?>

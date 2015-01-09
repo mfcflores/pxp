@@ -82,7 +82,7 @@ class PXP_Admin_Menus
 		switch( $_GET['page'] )
 		{
 			case 'pxp-clients':
-				include_once( 'admin/class-pxp-clients-table.php' );
+				include_once( 'admin/class-pxp-admin-clients-table.php' );
 				
 				$option = 'per_page';
 				$args = array(
@@ -172,7 +172,7 @@ class PXP_Admin_Menus
 	 */
 	public function client_list()
 	{
-		PXP_Admin::pxp_admin_clients();
+		PXP_Admin_Core::pxp_admin_clients();
 	}
 }
 
