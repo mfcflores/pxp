@@ -1,6 +1,6 @@
 <?php
 /**
- *	Installation related functions and actions.
+ *	Manage Admin Credits Page.
  *
  *	@author 	Mark Francis C. Flores & Illumedia Outsourcing
  *	@category 	Admin
