@@ -72,6 +72,7 @@
 	text-align: left;
 }
 
+<<<<<<< HEAD
 #pxp_product_gallery:after {
 	clear: both;
 }
@@ -158,4 +159,8 @@
 .product_image.column-product_image img  {
 	width: 80%;
 	height: auto;
+=======
+.text-red {
+	color: #E14D43;
+>>>>>>> 40048695de4d5ae3286e2b1fbee23249447c4a66
 }

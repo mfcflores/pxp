@@ -51,6 +51,9 @@ class PXP_Admin_Menus
 		
 		$pxp_transactions 	= add_users_page( 'Transaction History', 'Transaction History', 'read', 'pxp-client-transactions', array( $this, 'client_transactions') );
 		
+		$pxp_credit_adjustments = add_menu_page('Credit Adjustments', 'Credit Adjustments', 'create_users', 'credit-adjustments', array($this, 'credit_adjustments'), 'dashicons-admin-users', 72);
+				
+		
 		if( isset( $_GET['page'] ) ):
 			switch( $_GET['page'] )
 			{
@@ -112,11 +115,11 @@ class PXP_Admin_Menus
 				$My_WP_List_Table = new ClientOrder_List_Table();
 				break;
 			case 'pxp-client-transactions':
-				//include_once( 'clients/class-pxp-orders-table.php' );
+				include_once( 'clients/class-pxp-transactions-table.php' );
 				
 				$option = 'per_page';
 				$args = array(
-					'label' => 'Orders',
+					'label' => 'Transactions',
 					'default' => 10,
 					'option' => 'client_transactions_per_page'
 				);
@@ -124,7 +127,7 @@ class PXP_Admin_Menus
 				add_screen_option( $option, $args );
 				
 				// Create an instance of our package class.
-				//$My_WP_List_Table = new ClientOrder_List_Table();
+				$My_WP_List_Table = new Clients_Tranasactions_List_Table();
 				break;
 		}
 	}
@@ -167,12 +170,18 @@ class PXP_Admin_Menus
 		PXP_Clients::pxp_client_transactions();
 	}
 	
+	
 	/**
 	 * Init the Client Lists in Admin Dashboard.
 	 */
 	public function client_list()
 	{
 		PXP_Admin_Core::pxp_admin_clients();
+	}
+	
+	public function  credit_adjustments()
+	{
+		PXP_Admin::adjust_credits();
 	}
 }
 
