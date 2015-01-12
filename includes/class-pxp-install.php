@@ -25,7 +25,7 @@ class PXP_Install
 		register_activation_hook( PXP_FILE, array( $this, 'add_options_on_plugin_activation' ) );
 		
 		// Run function on plugin deactivation.
-		//register_deactivation_hook( PXP_FILE, array( $this, 'remove_roles_on_plugin_deactivation' ) );
+		register_deactivation_hook( PXP_FILE, array( $this, 'remove_roles_on_plugin_deactivation' ) );
 	
 		// Show action lins in plugin page.
 		add_filter( 'plugin_action_links_' . PXP_PLUGIN_BASENAME, array( $this, 'plugin_action_links' ) );

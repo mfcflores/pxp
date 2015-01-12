@@ -38,6 +38,8 @@ class PXP_Roles
 		    $role = get_role($role);
 			
 			$role->add_cap( 'read' );
+			
+			// Products
 			$role->add_cap( 'read_pxp_product');
 			$role->add_cap( 'read_private_pxp_products' );
 			$role->add_cap( 'edit_pxp_product' );
@@ -50,6 +52,27 @@ class PXP_Roles
 			$role->add_cap( 'delete_others_pxp_products' );
 			$role->add_cap( 'delete_private_pxp_products' );
 			$role->add_cap( 'delete_published_pxp_products' );
+			
+			if( $role->name == 'pxp_product_author' )
+				continue;
+			
+			$post_types = array( 'order', 'credit_block', 'promo_code', 'adjustment' );
+			
+			foreach( $post_types as $post_type )
+			{
+				$role->add_cap( 'read_pxp_' . $post_type );
+				$role->add_cap( 'read_private_pxp_' . $post_type . 's' );
+				$role->add_cap( 'edit_pxp_' . $post_type );
+				$role->add_cap( 'edit_pxp_' . $post_type . 's' );
+				$role->add_cap( 'edit_others_pxp_' . $post_type .'s' );
+				$role->add_cap( 'edit_published_pxp_' . $post_type  . 's' );
+				$role->add_cap( 'publish_pxp_' . $post_type .'s' );
+				$role->add_cap( 'delete_pxp_' . $post_type );
+				$role->add_cap( 'delete_pxp_' . $post_type . 's' );
+				$role->add_cap( 'delete_others_pxp_' . $post_type . 's' );
+				$role->add_cap( 'delete_private_pxp_' . $post_type . 's' );
+				$role->add_cap( 'delete_published_pxp_' . $post_type . 's' );
+			}
 		}
 	}
 }

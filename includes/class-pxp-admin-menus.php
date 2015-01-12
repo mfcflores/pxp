@@ -43,7 +43,7 @@ class PXP_Admin_Menus
 	{
 		global $pxp_credits, $pxp_orders; $pxp_transactions;
 		
-		$pxp_clients		= add_menu_page( 'PXP Clients', 'PXP Clients', 'create_users', 'pxp-clients', array( $this, 'client_list' ) , 'dashicons-admin-users', 71);
+		$pxp_clients		= add_menu_page( 'Clients', 'Clients', 'create_users', 'pxp-clients', array( $this, 'client_list' ) , 'dashicons-admin-users', 71);
 		
 		$pxp_credits		= add_users_page( 'Credits', 'Credits', 'read', 'pxp-client-credits', array( $this, 'client_credits') );
 		

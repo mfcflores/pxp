@@ -214,7 +214,7 @@ class PXP_Products
 					<label for="pxp_product_code"><?php _e( 'Product Code' ); ?></label>
 				</th>
 				<td>
-					<input type="text" id="pxp_product_code" name="pxp_product_code" value="<?php echo $product_code; ?>" class="regular-text" readonly />
+					<input type="text" id="pxp_product_code" name="pxp_product_code" value="<?php echo $product_code; ?>" class="regular-text" />
 				</td>
 			</tr>
 			<tr>

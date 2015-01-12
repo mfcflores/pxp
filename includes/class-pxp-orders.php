@@ -113,7 +113,7 @@ class PXP_Orders
 				printf( __( '%s', '%s' ), $company_name );
 				break;
 			case 'order_date':
-				$order_date = get_the_date( 'm/d/Y' );
+				$order_date 	= get_post_meta( $post_id, '_order_date', true);
 				
 				printf( __( '%s', '%s' ), $order_date );				
 				break;
@@ -156,6 +156,14 @@ class PXP_Orders
 		
 		$order_date 	= get_post_meta( $post_id, '_order_date', true);
 		$order_status 	= get_post_meta( $post_id, '_order_status', true);
+		
+		$user_id = get_post_meta( $post_id, '_user_id', true );
+		$user_info 	= get_userdata( $user_id );
+		$first_name	= ( $user_id ) ? $user_info->first_name : "";
+		$last_name 	= ( $user_id ) ? $user_info->last_name  : "";
+		$contact_name	= $first_name . ' ' . $last_name;
+		$company_name	= get_user_meta( $user_id, 'pxp_company_name', true );
+		$customer 		= ( $user_id ) ? $contact_name . ' (' . $company_name . ')' : "";
 ?>
 		<table class="form-table pxp_orders">
 			<tbody>
@@ -169,7 +177,7 @@ class PXP_Orders
 				</tr>
 				<tr valign="top">
 					<th><?php _e( 'Customer:' ); ?></th>
-					<td><?php _e( '' ); ?></td>
+					<td><?php _e( $customer ); ?></td>
 				</tr>
 			</tbody>
 		</table>

@@ -13,7 +13,7 @@ if( !defined( 'ABSPATH' ) )
 	exit; // Exit if accessed directly
 }
 
-if( !class_exists( 'PXP_Admin' ) )
+if( !class_exists( 'PXP_Admin_Clients' ) )
 {
 
 class PXP_Admin_Clients
