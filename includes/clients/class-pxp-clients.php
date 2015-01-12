@@ -365,17 +365,18 @@ class PXP_Clients
 			
 			<?php $My_WP_List_Table->display() ?>
 		</form>
-
 <?php
-}
-
+	}
+	
 	/**
 	 * Display Client Order Details
 	 * @param	int	$order_id	Order done by client.
 	 */
 	public static function pxp_client_order_details( $order_id )
 	{
-		
+		$order_id = ( isset( $_GET['order'] ) ) ? $_GET['order'] : NULL;
+
+		echo $order_id;
 	}
 	
 	/**
@@ -383,22 +384,43 @@ class PXP_Clients
 	 */
 	public static function pxp_client_transactions()
 	{
+		$transaction_id = ( isset( $_GET['transaction'] ) ) ? $_GET['transaction'] : NULL;
+?>
+		<div class="wrap">
+<?php
+		if( $transaction_id != NULL ):
+			// Output client transactions details
+			self::pxp_client_transaction_details( $transaction_id );
+		else:
+			// Output client transactions list.
+			self::pxp_client_transactions_list();
+		endif;
+?>
+		</div>
+<?php
+	}
+	
+	/**
+	 * Display Client Transaction History Page.
+	 */
+	public static function pxp_client_transactions_list()
+	{
 		global $My_WP_List_Table;
 		
 		$transactions = array(
 			array(
-				'ID'			=> 1,
-				'transaction_date'	=> 'Sample',
-				'transaction_description'	=> 'Quisque fringilla accumsan sapien nec gravida. '
+				'ID'						=> 1,
+				'transaction_description'	=> 'Quisque fringilla accumsan sapien nec gravida. ',
+				'transaction_date'			=> 'Sample',
 			),
 			array(
-				'ID'			=> 2,
-				'transaction_date'	=> 'Sample 2',
-				'transaction_description'	=> 'Praesent finibus orci non turpis suscipit ornare.'
+				'ID'						=> 2,
+				'transaction_description'	=> 'Praesent finibus orci non turpis suscipit ornare.',
+				'transaction_date'			=> 'Sample 2',
 			)
 		);
 		
-				// Set the orders to the table list.
+		// Set the transactions to the table list.
 		$My_WP_List_Table->set_item_list( $transactions );
 		
 		// Fetch, prepare, sort, and filter our data.
@@ -413,12 +435,22 @@ class PXP_Clients
 			</h4>
 		</div>
 
-		<?php $My_WP_List_Table->display() ?>
-
-<?php
+<?php 
+		$My_WP_List_Table->display();	
+	}
+	
+	/**
+	 * Display Client Transaction Details
+	 * @param	int	$transcation	Transactions done by client.
+	 */
+	public static function pxp_client_transaction_details( $transaction_id )
+	{
+		echo $transaction_id;
 	}
 }
 
 }
 
 return new PXP_Clients();
+
+?>

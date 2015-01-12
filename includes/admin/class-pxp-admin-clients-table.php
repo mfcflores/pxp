@@ -140,13 +140,19 @@ class Clients_List_Table extends WP_List_Table {
      * @return string Text to be placed inside the column <td> (movie title only)
      **************************************************************************/
 	function column_contact_name($item){		
-		$edit_link = get_edit_user_link( $item['ID'] );
+		$edit_link		= get_edit_user_link( $item['ID'] );
+		$delete_link	= wp_nonce_url( "users.php?action=delete&amp;user=" . $item['ID'], 'bulk-users' ) . "&wp_http_referer=" . admin_url() . "admin.php?page=pxp-clients";
+	
 	
         //Build row actions
         $actions = array(
             'edit'      => sprintf( '<a href="%s">Edit</a>', $edit_link . '&wp_http_referer=' . admin_url() . 'admin.php?page=pxp-clients' )
         );
         
+		if( current_user_can( 'manage_options' ) ) {
+			$actions['delete'] = sprintf( '<a href="%s">Delete</a>', $delete_link );
+		}
+		
         //Return the title contents
         return sprintf('<a href="%1$s"><strong>%2$s</strong></a> %3$s',
 			$edit_link . '&wp_http_referer=' . admin_url() . 'admin.php?page=pxp-clients',
@@ -224,7 +230,7 @@ class Clients_List_Table extends WP_List_Table {
      **************************************************************************/
     function get_bulk_actions() {
         $actions = array(
-            'delete'    	=> 'Delete'
+       
         );
         return $actions;
     }

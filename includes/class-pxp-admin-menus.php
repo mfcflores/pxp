@@ -43,16 +43,13 @@ class PXP_Admin_Menus
 	{
 		global $pxp_credits, $pxp_orders; $pxp_transactions;
 		
-		$pxp_clients		= add_menu_page( 'PXP Clients', 'PXP Clients', 'create_users', 'pxp-clients', array( $this, 'client_list' ) , 'dashicons-admin-users', 71);
+		$pxp_clients		= add_menu_page( 'Clients', 'Clients', 'create_users', 'pxp-clients', array( $this, 'client_list' ) , 'dashicons-admin-users', 71);
 		
 		$pxp_credits		= add_users_page( 'Credits', 'Credits', 'read', 'pxp-client-credits', array( $this, 'client_credits') );
 		
 		$pxp_orders			= add_users_page( 'Orders', 'Orders', 'read', 'pxp-client-orders', array( $this, 'client_order') );
 		
 		$pxp_transactions 	= add_users_page( 'Transaction History', 'Transaction History', 'read', 'pxp-client-transactions', array( $this, 'client_transactions') );
-		
-		$pxp_credit_adjustments = add_menu_page('Credit Adjustments', 'Credit Adjustments', 'create_users', 'credit-adjustments', array($this, 'credit_adjustments'), 'dashicons-admin-users', 72);
-				
 		
 		if( isset( $_GET['page'] ) ):
 			switch( $_GET['page'] )
@@ -85,7 +82,7 @@ class PXP_Admin_Menus
 		switch( $_GET['page'] )
 		{
 			case 'pxp-clients':
-				include_once( 'admin/class-pxp-clients-table.php' );
+				include_once( 'admin/class-pxp-admin-clients-table.php' );
 				
 				$option = 'per_page';
 				$args = array(
@@ -112,7 +109,7 @@ class PXP_Admin_Menus
 				add_screen_option( $option, $args );
 				
 				// Create an instance of our package class.
-				$My_WP_List_Table = new ClientOrder_List_Table();
+				$My_WP_List_Table = new Client_Order_List_Table();
 				break;
 			case 'pxp-client-transactions':
 				include_once( 'clients/class-pxp-transactions-table.php' );
@@ -127,7 +124,7 @@ class PXP_Admin_Menus
 				add_screen_option( $option, $args );
 				
 				// Create an instance of our package class.
-				$My_WP_List_Table = new Clients_Tranasactions_List_Table();
+				$My_WP_List_Table = new Client_Tranasactions_List_Table();
 				break;
 		}
 	}
@@ -170,18 +167,12 @@ class PXP_Admin_Menus
 		PXP_Clients::pxp_client_transactions();
 	}
 	
-	
 	/**
 	 * Init the Client Lists in Admin Dashboard.
 	 */
 	public function client_list()
 	{
-		PXP_Admin::pxp_admin_clients();
-	}
-	
-	public function  credit_adjustments()
-	{
-		PXP_Admin::adjust_credits();
+		PXP_Admin_Core::pxp_admin_clients();
 	}
 }
 

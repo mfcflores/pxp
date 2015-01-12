@@ -39,6 +39,8 @@ class PXP_Orders
 		$columns = array(
 			'cb' 			=> '<input type="checkbox" />',
 			'order_id' 		=> __( 'ID' ),
+			'contact_name'	=> __( 'Contact Name' ),
+			'company_name'	=> __( 'Company Name' ),
 			'order_date' 	=> __( 'Date' ),
 			'order_total'	=> __( 'Total' ),
 			'order_status'	=> __( 'Status' )
@@ -59,11 +61,6 @@ class PXP_Orders
 		{
 			case 'order_id':
 				$order_id = get_post_meta( $post_id, '_order_id', true );
-				
-				printf( __( '%s', '%s' ), $order_id );
-				break;
-			case 'order_date':
-				$order_date = get_the_date( 'm/d/Y' );
 				
 				$edit 		= get_edit_post_link( $post_id );
 				$trash 		= get_delete_post_link( $post_id );
@@ -98,8 +95,27 @@ class PXP_Orders
 					</div>';
 				}
 				
-				printf( __( '<a href="%s"><strong>%s</strong></a> %s', '%s' ), $edit, $order_date, $row_action );
+				printf( __( '<a href="%s"><strong>%s</strong></a> %s', '%s' ), $edit, $order_id, $row_action );
+				break;
+			case 'contact_name':
+				$user_id = get_post_meta( $post_id, '_user_id', true );
+				$user_info 	= get_userdata( $user_id );
+				$first_name	= $user_info->first_name;
+				$last_name 	= $user_info->last_name;
+				$contact_name	= $first_name . ' ' . $last_name;
+		
+				printf( __( '%s', '%s' ), $contact_name );
+				break;
+			case 'company_name':
+				$user_id 		= get_post_meta( $post_id, '_user_id', true );
+				$company_name	= get_user_meta( $user_id, 'pxp_company_name', true );
 				
+				printf( __( '%s', '%s' ), $company_name );
+				break;
+			case 'order_date':
+				$order_date 	= get_post_meta( $post_id, '_order_date', true);
+				
+				printf( __( '%s', '%s' ), $order_date );				
 				break;
 			case 'order_total':
 				$order_total = get_post_meta( $post_id, '_order_total', true );
@@ -122,6 +138,8 @@ class PXP_Orders
 	public function pxp_edit_orders_sortable_columns( $columns ) {
 
 		$columns['order_id'] 		= 'order_id';
+		$columns['contact_name'] 	= 'contact_name';
+		$columns['company_name'] 	= 'company_name';
 		$columns['order_date'] 		= 'order_date';
 		$columns['order_total'] 	= 'order_total';
 		$columns['order_status'] 	= 'order_status';
@@ -138,6 +156,14 @@ class PXP_Orders
 		
 		$order_date 	= get_post_meta( $post_id, '_order_date', true);
 		$order_status 	= get_post_meta( $post_id, '_order_status', true);
+		
+		$user_id = get_post_meta( $post_id, '_user_id', true );
+		$user_info 	= get_userdata( $user_id );
+		$first_name	= ( $user_id ) ? $user_info->first_name : "";
+		$last_name 	= ( $user_id ) ? $user_info->last_name  : "";
+		$contact_name	= $first_name . ' ' . $last_name;
+		$company_name	= get_user_meta( $user_id, 'pxp_company_name', true );
+		$customer 		= ( $user_id ) ? $contact_name . ' (' . $company_name . ')' : "";
 ?>
 		<table class="form-table pxp_orders">
 			<tbody>
@@ -151,7 +177,7 @@ class PXP_Orders
 				</tr>
 				<tr valign="top">
 					<th><?php _e( 'Customer:' ); ?></th>
-					<td><?php _e( '' ); ?></td>
+					<td><?php _e( $customer ); ?></td>
 				</tr>
 			</tbody>
 		</table>
@@ -201,3 +227,5 @@ class PXP_Orders
 }
 
 return new PXP_Orders();
+
+?>

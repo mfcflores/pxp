@@ -38,7 +38,7 @@ if(!class_exists('WP_List_Table')){
  * 
  * Our theme for this list table is going to be movies.
  */
-class Clients_Tranasactions_List_Table extends WP_List_Table {
+class Client_Tranasactions_List_Table extends WP_List_Table {
     
     /** ************************************************************************
      * Normally we would be querying data from a database and manipulating that
@@ -60,8 +60,8 @@ class Clients_Tranasactions_List_Table extends WP_List_Table {
          
         //Set parent defaults
         parent::__construct( array(
-            'singular'  => 'order',     //singular name of the listed records
-            'plural'    => 'orders',    //plural name of the listed records
+            'singular'  => 'transaction',     //singular name of the listed records
+            'plural'    => 'transactions',    //plural name of the listed records
             'ajax'      => true        //does this table support ajax?
         ) );
         
@@ -95,8 +95,8 @@ class Clients_Tranasactions_List_Table extends WP_List_Table {
     function column_default($item, $column_name){
         switch($column_name){
 			case 'ID':
-			case 'transaction_date':
             case 'transaction_description':
+			case 'transaction_date':
                 return $item[$column_name];
             default:
 				return $item[$column_name];
@@ -136,23 +136,24 @@ class Clients_Tranasactions_List_Table extends WP_List_Table {
      * @see WP_List_Table::::single_row_columns()
      * @param array $item A singular item (one full row's worth of data)
      * @return string Text to be placed inside the column <td> (movie title only)
-     **************************************************************************/
+     *************************************************************************
 	function column_transaction_description($item){		
-		$edit_link = get_edit_user_link( $item['ID'] );
-	
         //Build row actions
         $actions = array(
-            'view'      => sprintf( '<a href="%s">View</a>', admin_url() . 'admin.php?page=pxp-clients-transactions&transactions='. $item['ID'] )
+            'view'      => sprintf( '<a href="%s">View</a>', admin_url() . "admin.php?page=pxp-client-transactions&transaction=" . $item['ID'] )
         );
         
         //Return the title contents
-        return sprintf('<a href="%1$s"><strong>%2$s</strong></a> %3$s',
-			$edit_link . '&wp_http_referer=' . admin_url() . 'admin.php?page=pxp-clients-transactions&transactions=',
+        return sprintf('<a href="%1$s%2$s"><strong>%3$s</strong></a> %4$s',
+			admin_url() . "admin.php?page=pxp-client-transactions&transaction=",
+			$item['ID'],
             $item['transaction_description'],
 			$this->row_actions($actions)
         );
+		
     }
-    
+    */
+	
     /** ************************************************************************
      * REQUIRED! This method dictates the table's columns and titles. This should
      * return an array where the key is the column slug (and class) and the value 
@@ -168,10 +169,10 @@ class Clients_Tranasactions_List_Table extends WP_List_Table {
      **************************************************************************/
     function get_columns(){
         $columns = array(
-            'cb'        		=> '<input type="checkbox" />', //Render a checkbox instead of text
-            'ID'     			=> 'ID',
-			'transaction_date'		=> 'Date',
-			'transaction_description'		=> 'Description'
+            'cb'        				=> '<input type="checkbox" />', //Render a checkbox instead of text
+            'ID'     					=> 'ID',
+			'transaction_description'	=> 'Description',
+			'transaction_date'			=> 'Date',
         );
 		
         return $columns;
@@ -193,9 +194,9 @@ class Clients_Tranasactions_List_Table extends WP_List_Table {
      **************************************************************************/
     function get_sortable_columns() {
         $sortable_columns = array(
-            'ID'     			=> array('ID', true),     //true means it's already sorted
-            'transaction_date'  	=> array('transaction_date', false),
-			'transaction_description'		=> array('transaction_description', false)
+            'ID'     					=> array('ID', true),     //true means it's already sorted
+			'transaction_description'	=> array('transaction_description', false),
+            'transaction_date'  		=> array('transaction_date', false),
         );
 		
         return $sortable_columns;
@@ -218,7 +219,7 @@ class Clients_Tranasactions_List_Table extends WP_List_Table {
      **************************************************************************/
     function get_bulk_actions() {
         $actions = array(
-            'delete'    	=> 'Delete'
+          //  'delete'    	=> 'Delete'
         );
         return $actions;
     }
@@ -262,7 +263,7 @@ class Clients_Tranasactions_List_Table extends WP_List_Table {
         /**
          * First, lets decide how many records per page to show
          */
-        $per_page = $this->get_items_per_page('clients_per_page', 10);
+        $per_page = $this->get_items_per_page('client_transactions_per_page', 10);
         
         /**
          * REQUIRED. Now we need to define our column headers. This includes a complete

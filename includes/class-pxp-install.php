@@ -22,37 +22,21 @@ class PXP_Install
 	{
 		// Run function on plugin activation.
 		register_activation_hook( PXP_FILE, array( $this, 'add_roles_on_plugin_activation' ) );
+		register_activation_hook( PXP_FILE, array( $this, 'add_options_on_plugin_activation' ) );
 		
-		//register_deactivation_hook( PXP_FILE, array( $this, 'remove_roles_on_plugin_deactivation' ) );
+		// Run function on plugin deactivation.
+		register_deactivation_hook( PXP_FILE, array( $this, 'remove_roles_on_plugin_deactivation' ) );
 	
 		// Show action lins in plugin page.
 		add_filter( 'plugin_action_links_' . PXP_PLUGIN_BASENAME, array( $this, 'plugin_action_links' ) );
 	}
 	
 	/**
-	 * Remove roles on plugin deactivation.
+	 * Add options on plugin activation.
 	 */
-	public function remove_roles_on_plugin_deactivation()
+	public function add_options_on_plugin_activation()
 	{
-		remove_role('pxp_client');
-		remove_role('pxp_project_manager');
-		remove_role('pxp_product_author');
-	}
-	
-	/**
-	 * Show action links on the plugin page.
-	 *
-	 * @access 	public
-	 * @param	array	$links Plugin action links.
-	 * @return 	array
-	 */
-	public function plugin_action_links( $links )
-	{
-		$my_links = array(
-			'<a href="'. get_admin_url(null, 'options-general.php?page=gpaisr') .'">Settings</a>'
-		);
-		
-		return array_merge( $my_links, $links );
+		add_option( 'pxp_product_id', 1 ); // Set Product ID to 1.
 	}
 	
 	/**
@@ -112,8 +96,36 @@ class PXP_Install
 			)
 		);
 	}
+	
+	/**
+	 * Remove roles on plugin deactivation to modify or update capabilities.
+	 */
+	public function remove_roles_on_plugin_deactivation()
+	{
+		remove_role('pxp_client');
+		remove_role('pxp_project_manager');
+		remove_role('pxp_product_author');
+	}
+	
+	/**
+	 * Show action links on the plugin page.
+	 *
+	 * @access 	public
+	 * @param	array	$links Plugin action links.
+	 * @return 	array
+	 */
+	public function plugin_action_links( $links )
+	{
+		$my_links = array(
+			'<a href="'. get_admin_url(null, 'options-general.php?page=gpaisr') .'">Settings</a>'
+		);
+		
+		return array_merge( $my_links, $links );
+	}
 }
 
 }
 
 return new PXP_Install();
+
+?>

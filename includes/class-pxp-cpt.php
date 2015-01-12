@@ -21,19 +21,24 @@ class PXP_Cpt
 	public function __construct()
 	{
 		add_action( 'init', array( $this, 'pxp_register_post_types' ), 5 );
+		add_action( 'init', array( $this, 'pxp_register_credit_post_types' ), 5 );
+		add_action( 'init', array( $this, 'pxp_register_taxonomies' ), 5 );
+		
+		// Hide Add Menu in custom post types.
+		add_action( 'admin_menu', array( $this, 'pxp_hide_add_menu' ) );
 		
 		add_action( 'add_meta_boxes', array( $this, 'pxp_add_meta_boxes' ) );
 	}
 	
 	/**
-	 * Register PixelPartners Custom Post Types
+	 * Register plugin custom post types.
 	 */
 	public function pxp_register_post_types()
 	{
 		$pxp_cpt = array(
-			'product'	=> 'Product',
-			'order'	=> 'Order',
-			'transaction'	=> 'Transaction'
+			'product'		=> 'Product',
+			'order'			=> 'Order',
+			'transaction'	=> 'Transaction',
 		);
 		
 		foreach($pxp_cpt as $key => $value)
@@ -57,7 +62,7 @@ class PXP_Cpt
 
 			$args = array(
 				'labels'             => $labels,
-				'public'             => true,
+				'public'             => false,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'show_in_menu'       => true,
@@ -73,10 +78,14 @@ class PXP_Cpt
 			if( $key == "order" )
 			{
 				$args['supports'] = false;
+				$args['public']				= true;
+				$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
+				$args['map_meta_cap']		= true;
 			}
 			
 			if( $key == "product" )
 			{
+				$args['public']				= true;
 				$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
 				$args['map_meta_cap']		= true;
 			}
@@ -87,6 +96,149 @@ class PXP_Cpt
 		}
 	}
 	
+	/**
+	 * Register plugin credits related custom post types.
+	 */
+	public function pxp_register_credit_post_types()
+	{
+		$pxp_cpt = array(
+			'credit_block'	=> 'Credit Block',
+			'promo_code'	=> 'Promo Code',
+			'adjustment'	=> 'Credit Adjustment',
+		);
+		
+		foreach($pxp_cpt as $key => $value)
+		{
+			$labels = array(
+				'name'               => _x( $value .'s', 'post type general name', 'excavations' ),
+				'singular_name'      => _x( $value, 'post type singular name' ),
+				'menu_name'          => _x( $value . 's', 'admin menu' ),
+				'name_admin_bar'     => _x( $value, 'add new on admin bar' ),
+				'add_new'            => _x( 'Add New ' . $value, $key ),
+				'add_new_item'       => __( 'Add New ' . $value ),
+				'new_item'           => __( 'New ' . $value ),
+				'edit_item'          => __( 'Edit ' . $value ),
+				'view_item'          => __( 'View ' . $value ),
+				'all_items'          => __( $value ),
+				'search_items'       => __( 'Search ' . $value ),
+				'parent_item_colon'  => __( 'Parent ' . $value . ':' ),
+				'not_found'          => __( 'No ' . $value . ' found.' ),
+				'not_found_in_trash' => __( 'No ' . $value . ' found in Trash.' ),
+			);
+
+			if( $key == "credit_block" )
+			{
+				$labels['menu_name'] = "Credits";
+			}
+			
+			$args = array(
+				'labels'             	=> $labels,
+				'public'             	=> true,
+				'publicly_queryable' 	=> true,
+				'show_ui'            	=> true,
+				'show_in_menu'       	=> true,
+				'query_var'          	=> true,
+				'rewrite'            	=> false,
+				'capability_type'    	=> array( 'pxp_' . $key, 'pxp_' . $key . 's' ),
+				'has_archive'        	=> true,
+				'hierarchical'       	=> false,
+				'menu_position'      	=> null,
+				'supports'           	=> false,
+				'map_meta_cap'			=> true
+			);
+			
+			if( $key != "credit_block" )
+			{
+				$args['show_in_menu'] = 'edit.php?post_type=pxp_credit_blocks';
+			}
+
+			$post_type = 'pxp_' . $key . 's';
+			
+			register_post_type($post_type, $args);
+		}
+	}
+	
+	/**
+	 * Register Custom Taxonomies.
+	 */
+	public function pxp_register_taxonomies()
+	{	
+		$labels = array(
+			'name'                       => _x( 'Product Categories', 'taxonomy general name' ),
+			'singular_name'              => _x( 'Product Category', 'taxonomy singular name' ),
+			'search_items'               => __( 'Search Categories' ),
+			'popular_items'              => __( 'Popular Category' ),
+			'all_items'                  => __( 'All Categories' ),
+			'parent_item'                => null,
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Category' ),
+			'update_item'                => __( 'Update Category' ),
+			'add_new_item'               => __( 'Add New Category' ),
+			'new_item_name'              => __( 'New Category Name' ),
+			'separate_items_with_commas' => __( 'Separate tags with commas' ),
+			'add_or_remove_items'        => __( 'Add or remove category' ),
+			'choose_from_most_used'      => __( 'Choose from the most used tags' ),
+			'not_found'                  => __( 'No category found.' ),
+			'menu_name'                  => __( 'Product Category' ),
+		);
+
+		$args = array(
+			'hierarchical'          => true,
+			'labels'                => $labels,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'product_category' ),
+		);
+
+		register_taxonomy( 'pxp_product_categories', 'pxp_products', $args );
+		
+		$labels = array(
+			'name'                       => _x( 'Product Tags', 'taxonomy general name' ),
+			'singular_name'              => _x( 'Tag', 'taxonomy singular name' ),
+			'search_items'               => __( 'Search Tags' ),
+			'popular_items'              => __( 'Popular Tag' ),
+			'all_items'                  => __( 'All Tags' ),
+			'parent_item'                => null,
+			'parent_item_colon'          => null,
+			'edit_item'                  => __( 'Edit Tag' ),
+			'update_item'                => __( 'Update Tag' ),
+			'add_new_item'               => __( 'Add New Tag' ),
+			'new_item_name'              => __( 'New Category Name' ),
+			'separate_items_with_commas' => __( 'Separate tags with commas' ),
+			'add_or_remove_items'        => __( 'Add or remove tag' ),
+			'choose_from_most_used'      => __( 'Choose from the most used tags' ),
+			'not_found'                  => __( 'No tag found.' ),
+			'menu_name'                  => __( 'Product Tags' ),
+		);
+
+		$args = array(
+			'hierarchical'          => true,
+			'labels'                => $labels,
+			'show_ui'               => true,
+			'show_admin_column'     => true,
+			'query_var'             => true,
+			'rewrite'               => array( 'slug' => 'product_tags' ),
+		);
+
+		register_taxonomy( 'pxp_product_tags', 'pxp_products', $args );
+	}
+	
+	/**
+	 * Hide add menu in custom post types.
+	 */
+	function pxp_hide_add_menu()
+	{
+		global $submenu;
+		
+		unset($submenu['edit.php?post_type=pxp_credit_blocks'][10]);
+		unset($submenu['edit.php?post_type=pxp_promo_codes'][10]);
+		unset($submenu['edit.php?post_type=pxp_adjustments'][10]);
+	}
+	
+	/**
+	 * Initiate meta boxes of post types.
+	 */
 	public function pxp_add_meta_boxes()
 	{
 		// PXP Orders Meta Boxes
@@ -103,3 +255,5 @@ class PXP_Cpt
 }
 
 return new PXP_Cpt();
+
+?>
