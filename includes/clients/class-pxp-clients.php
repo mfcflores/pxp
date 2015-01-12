@@ -225,66 +225,67 @@ class PXP_Clients
 	public static function pxp_client_credits()
 	{
 ?>
-		<div id="pxp-creditsPage">
-			<div class="row">
-				<div class="col-md-6">
+		<div id="pxp-credits-page">
+			<div class="pxp-credit-box">
+				<div class="pxp-credit-column50">
 					<h1>Purchase Credits</h1>
 				</div>
-				<div class="col-md-6 text-right">
-					<h3><span class="text-info">Remaining Balance: </span><span class="text-danger">12345 Credits</span></h3>
+				<div class="pxp-credit-column50 text-right">
+					<h3 style="margin-right:15px;">Remaining Balance:&nbsp;<span class="text-red">12345</span> Credits</h3>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. Quisque odio enim, vulputate in felis vel, tincidunt rutrum ex. Quisque fringilla accumsan sapien nec gravida. Sed ut ullamcorper nunc, eget accumsan purus. Integer tempus est vel magna euismod sollicitudin. Morbi eget dictum velit, et ultricies eros. In vel neque nec arcu suscipit congue a a mauris. Quisque arcu mi, cursus sed dictum a, tincidunt et turpis. 
-				</div>
+			<div class="pxp-credit-box">
+				<h4>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. Quisque odio enim, vulputate in felis vel, tincidunt rutrum ex.  Praesent finibus orci non turpis suscipit ornare.
+				</h4>
 			</div>
-			<div id="pxp-credits" class="row text-center">
-				<div class="pxp-credit col-md-3 col-md-offset-1">
-					<div id="header" class="row">
+			<div class="pxp-credit-box text-center">
+				<div class="pxp-credit">
+					<div class="row">
 						<h3>500 Credits</h3>
 					</div>
-					<div id="content" class="row">
-						<p>$500</p>
-						<p>500 Credits</p>
-						<p>+5% Credits</p>
-					</div>
-					<div id="btn" class="row">
-						<button type="button" class="btn btn-primary btn-lg">Buy</button>
-					</div>
+						<div id="content" class="row">
+							<p>$500</p>
+							<p>500 Credits</p>
+							<p>+5% Credits</p>
+						</div>
+							<div id="btn" class="row">
+								<button type="button" class="btn">Buy</button>
+							</div>
 				</div>
-				<div class="pxp-credit col-md-3">
-					<div id="header" class="row">
+				<div class="pxp-credit">
+					<div class="row">
 						<h3>100 Credits</h3>
 					</div>
-					<div id="content" class="row">
-						<p>$500</p>
-						<p>500 Credits</p>
-						<p>+5% Credits</p>
-					</div>
-					<div id="btn" class="row">
-						<button type="button" class="btn btn-primary btn-lg">Buy</button>
-					</div>
+						<div id="content" class="row">
+							<p>$100</p>
+							<p>100 Credits</p>
+							<p>+10 Credits</p>
+						</div>
+							<div id="btn" class="row">
+								<button type="button" class="btn">Buy</button>
+							</div>
 				</div>
-				<div class="pxp-credit col-md-3">
+				<div class="pxp-credit">
 					<div class="row">
 						<h3>Any Amount</h3>
 					</div>
-					<div id="content" class="row">
-						<p>$500</p>
-						<p>500 Credits</p>
-						<p>+5% Credits</p>
-					</div>
-					<div id="btn" class="row">
-						<button type="button" class="btn btn-primary btn-lg">Buy</button>
-					</div>
+						<div id="content" class="row">
+							<p>Lorem ipsum dolor </p>
+							<p>adipiscing eli</p>
+							<p>sit amet</p>
+						</div>
+							<div id="btn" class="row">
+								<button type="button" class="btn">Buy</button>
+							</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. Quisque odio enim, vulputate in felis vel, tincidunt rutrum ex. Quisque fringilla accumsan sapien nec gravida. Sed ut ullamcorper nunc, eget accumsan purus. Integer tempus est vel magna euismod sollicitudin. Morbi eget dictum velit, et ultricies eros. In vel neque nec arcu suscipit congue a a mauris. Quisque arcu mi, cursus sed dictum a, tincidunt et turpis. 
-				</div>
+			<div class="pxp-credit-box">
+				<h4 >
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. Quisque odio enim, vulputate in felis vel, tincidunt rutrum ex. Quisque fringilla accumsan sapien nec gravida. 
+				</h4>
 			</div>
+
 			<div class="clearfix"></div>
 		</div>
 <?php
@@ -364,9 +365,10 @@ class PXP_Clients
 			
 			<?php $My_WP_List_Table->display() ?>
 		</form>
+
 <?php
-	}
-	
+}
+
 	/**
 	 * Display Client Order Details
 	 * @param	int	$order_id	Order done by client.
@@ -382,8 +384,38 @@ class PXP_Clients
 	public static function pxp_client_transactions()
 	{
 		global $My_WP_List_Table;
+		
+		$transactions = array(
+			array(
+				'ID'			=> 1,
+				'transaction_date'	=> 'Sample',
+				'transaction_description'	=> 'Quisque fringilla accumsan sapien nec gravida. '
+			),
+			array(
+				'ID'			=> 2,
+				'transaction_date'	=> 'Sample 2',
+				'transaction_description'	=> 'Praesent finibus orci non turpis suscipit ornare.'
+			)
+		);
+		
+				// Set the orders to the table list.
+		$My_WP_List_Table->set_item_list( $transactions );
+		
+		// Fetch, prepare, sort, and filter our data.
+		$My_WP_List_Table->prepare_items();
+?>
+		<div>
+			<h2>Transaction History</h2>
+		<div>
+		<div>
+			<h4>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare.
+			</h4>
+		</div>
 
-		echo 'Transaction History';
+		<?php $My_WP_List_Table->display() ?>
+
+<?php
 	}
 }
 
