@@ -30,10 +30,13 @@ class PXP_Admin_Assets
 	{
 		global $post;
 		
-		wp_enqueue_script	( 'jquery' );
-		wp_enqueue_script	( 'jquery-ui-core' );
-		wp_enqueue_script	( 'jquery-ui-sortable' );
+		wp_enqueue_script	( 'jquery', PXP_URL . '/assets/js/jquery.js' );
 		
+		wp_register_script	( 'jquery-ui', PXP_URL . '/assets/js/jquery-ui.js');
+		wp_enqueue_script	( 'jquery-ui' );
+		
+		wp_register_style	( 'jquery-ui-style', PXP_URL . '/assets/css/jquery-ui.css');
+		wp_enqueue_style	( 'jquery-ui-style' );
 		
 		if( isset( $post ) && $post->post_type == "pxp_products" )
 		{

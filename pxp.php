@@ -85,12 +85,6 @@ final class PixelPartners
 		// Custom Post Type
 		include_once( 'includes/class-pxp-cpt.php' );
 		
-		// CPT: Orders
-		include_once( 'includes/class-pxp-orders.php' );
-		
-		// CPT: Products
-		include_once( 'includes/class-pxp-products.php' );
-		
 		// Admin Menus
 		include_once( 'includes/class-pxp-admin-menus.php' );
 		

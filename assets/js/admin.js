@@ -1,4 +1,8 @@
 jQuery(document).ready(function($) {
+	$(".datepicker").datepicker({
+		dateFormat: 'mm/dd/yy'
+	});
+
 	/**
 	 * Add image to product gallery.
 	 */

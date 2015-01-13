@@ -24,10 +24,28 @@ class PXP_Cpt
 		add_action( 'init', array( $this, 'pxp_register_credit_post_types' ), 5 );
 		add_action( 'init', array( $this, 'pxp_register_taxonomies' ), 5 );
 		
+		add_filter( 'wp_insert_post_data', array( $this, 'pxp_filter_insert_post_data' ), 99, 2 );
+		
 		// Hide Add Menu in custom post types.
 		add_action( 'admin_menu', array( $this, 'pxp_hide_add_menu' ) );
 		
 		add_action( 'add_meta_boxes', array( $this, 'pxp_add_meta_boxes' ) );
+		
+		
+		// CPT: Orders
+		include_once( 'class-pxp-orders.php' );
+		
+		// CPT: Products
+		include_once( 'class-pxp-products.php' );
+		
+		// CPT: Credit Blocks
+		include_once( 'class-pxp-credit-blocks.php' );
+		
+		// CPT: Promo Codes
+		include_once( 'class-pxp-promo-codes.php' );
+		
+		// CPT: Credit Adjustments
+		include_once( 'class-pxp-credit-adjustments.php' );
 	}
 	
 	/**
@@ -249,6 +267,47 @@ class PXP_Cpt
 		// PXP Products Meta Boxes
 		add_meta_box( 'pxp_product_details', __( 'Product Details' ), 'PXP_Products::pxp_product_details_box' , 'pxp_products', 'normal' );
 		add_meta_box( 'pxp_product_gallery', __( 'Product Gallery' ), 'PXP_Products::pxp_product_gallery_box' , 'pxp_products', 'side' );
+		
+		// PXP Credit Blocks Meta Boxes
+		add_meta_box( 'pxp_credit_blocks_general', __( 'Credit Block Details' ), 'PXP_Credit_Blocks::pxp_credit_blocks_general_box' , 'pxp_credit_blocks', 'normal' );
+		
+		// PXP Promo Codes Meta Boxes
+		add_meta_box( 'pxp_promo_codes_general', __( 'Promo Code Details' ), 'PXP_Promo_Codes::pxp_promo_codes_general_box' , 'pxp_promo_codes', 'normal' );
+	}
+	
+	/*
+	 * Filter during add new post.
+	 *
+	 * @param int $post_id The ID of the post being saved.
+	 * @param WP_Post $post The post object.
+	 */
+	public function pxp_filter_insert_post_data($data, $postarr)
+	{
+		global $post_id;
+		
+		// If it is our form has not been submitted, so we dont want to do anything
+		if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+		
+		switch($data['post_type'])
+		{
+			case 'pxp_credit_blocks':
+				$date = date( 'Y-m-d' );
+				$data['post_title'] = "Credit Block - " . $date;
+				$data['post_name'] 	= "credit-block-" . $date;
+				break;
+			case 'pxp_promo_codes':
+				$date = date( 'Y-m-d' );
+				$data['post_title'] = "Promo Code - " . $date;
+				$data['post_name'] 	= "promo-code-" . $date;
+				break;
+			case 'pxp_adjustments':
+				$date = date( 'Y-m-d' );
+				$data['post_title'] = "Credit Adjustment - " . $date;
+				$data['post_name'] 	= "credit-adjustment-" . $date;
+				break;
+		}
+		
+		return $data;
 	}
 }
 

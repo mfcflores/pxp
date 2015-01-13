@@ -140,12 +140,6 @@ class PXP_Clients
 					<label for="pxp_operating_system"><?php _e( 'Operating System' ); ?></label>
 				</th>
 				<td>
-					<!--<select name="pxp_operating_system">
-						<option <?php echo ( $pxp_operating_system == "Windows" ) ? "selected" : ""; ?> value="Windows">Windows</option>
-						<option <?php echo ( $pxp_operating_system == "Mac" ) ? "selected" : ""; ?> value="Mac">Mac</option>
-						<option <?php echo ( $pxp_operating_system == "Both" ) ? "selected" : ""; ?> value="Both">Both</option>
-						<option <?php echo ( $pxp_operating_system == "Others" ) ? "selected" : ""; ?> value="Others">Others</option>
-					</select>-->
 					<input <?php echo ( $pxp_operating_system == "Windows" ) ? "checked" : ""; ?> type="radio" name="pxp_operating_system" id="pxp_operating_system" value="Windows"> <span><?php _e( 'Windows' ); ?></span><br>
 					<input <?php echo ( $pxp_operating_system == "Mac" ) ? "checked" : ""; ?> type="radio" name="pxp_operating_system" id="pxp_operating_system" value="Mac"> <span><?php _e( 'Mac' ); ?></span><br>
 					<input <?php echo ( $pxp_operating_system == "Both" ) ? "checked" : ""; ?> type="radio" name="pxp_operating_system" id="pxp_operating_system" value="Both"> <span><?php _e( 'Both' ); ?></span><br>
