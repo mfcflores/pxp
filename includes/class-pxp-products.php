@@ -20,9 +20,8 @@ class PXP_Products
 {
 	public function __construct()
 	{
-		add_action( 'save_post', array( $this, 'pxp_product_save_post' ), 10, 2 );
-		
 		// Add Actions
+		add_action( 'save_post', array( $this, 'pxp_product_save_post' ), 10, 2 );
 		add_action('manage_pxp_products_posts_custom_column', array($this, 'pxp_products_posts_custom_column'), 10, 2);
 		
 		// Add Filters
@@ -31,13 +30,12 @@ class PXP_Products
 	}
 	
 	/**
-	* Set Columns of Listings.
-	*
-	* @param $columns An array of columns.
-	*/
+	 * Set Columns of Listings.
+	 *
+	 * @param $columns An array of columns.
+	 */
 	public function pxp_set_custom_edit_pxp_products_columns($columns)
 	{
-		
 		$columns = array(
 			'cb' 			=> '<input type="checkbox" />',
 			'product_id' 	=> __( 'ID' ),
@@ -53,11 +51,11 @@ class PXP_Products
 	}
 	
 	/**
-	* Set values of the columns per listing.
-	*
-	* @param $columns An array of columns.
-	* @param $post_id Post ID of listing list.
-	*/
+	 * Set values of the columns per listing.
+	 *
+	 * @param $columns An array of columns.
+	 * @param $post_id Post ID of listing list.
+	 */
 	public function pxp_products_posts_custom_column($column, $post_id) 
 	{		
 		switch ($column) 
@@ -301,7 +299,7 @@ class PXP_Products
 	 * @param int $post_id The ID of the post being saved.
 	 * @param WP_Post $post The post object.
 	 */
-	public function pxp_product_save_post($post_id, $post)
+	public function pxp_product_save_post( $post_id, $post )
 	{
 		if( !isset( $_POST['pxp_products_nonce'] ) ) { return $post_id; }
 

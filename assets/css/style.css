@@ -29,6 +29,14 @@
 	width: 100%;
 }
 
+.half-width {
+	width: 50%;
+}
+
+.full-width {
+	width: 100%;
+}
+
 .pxp-credit {
 	float: left;
 	width: 29%;
