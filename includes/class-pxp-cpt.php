@@ -120,9 +120,9 @@ class PXP_Cpt
 	public function pxp_register_credit_post_types()
 	{
 		$pxp_cpt = array(
-			'credit_block'	=> 'Credit Block',
-			'promo_code'	=> 'Promo Code',
-			'adjustment'	=> 'Credit Adjustment',
+			'credit_block'					=> 'Credit Block',
+			'promo_code'					=> 'Promo Code',
+			'adjustment'	   					=> 'Credit Adjustment',
 		);
 		
 		foreach($pxp_cpt as $key => $value)
@@ -273,6 +273,9 @@ class PXP_Cpt
 		
 		// PXP Promo Codes Meta Boxes
 		add_meta_box( 'pxp_promo_codes_general', __( 'Promo Code Details' ), 'PXP_Promo_Codes::pxp_promo_codes_general_box' , 'pxp_promo_codes', 'normal' );
+		
+		//PXP Credit Adjustments Meta Boxes
+		add_meta_box( 'pxp_credit_adjustments_general', __( 'Credit Adjustments Details' ), 'PXP_Credit_Adjustments::pxp_credit_adjustments_general_box' , 'pxp_adjustments', 'normal' );
 	}
 	
 	/*

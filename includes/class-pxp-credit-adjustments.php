@@ -22,11 +22,11 @@ class PXP_Credit_Adjustments
 	{
 		// Add Actions
 		//add_action( 'save_post', array( $this, 'pxp_credit_adjustment_save_post' ), 10, 2 );
-		add_action('manage_pxp_credit_adjustments_posts_custom_column', array($this, 'pxp_credit_adjustments_posts_custom_column'), 10, 2);
+		add_action('manage_pxp_adjustments_posts_custom_column', array($this, 'pxp_credit_adjustments_posts_custom_column'), 10, 2);
 		
 		// Add Filters
-		add_filter('manage_edit-pxp_credit_adjustments_columns', array($this, 'pxp_set_custom_edit_pxp_credits_adjustment_columns'));
-		add_filter('manage_edit-pxp_credit_adjustments_sortable_columns', array($this, 'pxp_edit_credit_adjustments_sortable_columns'));
+		add_filter('manage_edit-pxp_adjustments_columns', array($this, 'pxp_set_custom_edit_pxp_credit_adjustments_columns'));
+		add_filter('manage_edit-pxp_adjustments_sortable_columns', array($this, 'pxp_edit_credit_adjustments_sortable_columns'));
 	}
 	
 	/**
@@ -37,14 +37,14 @@ class PXP_Credit_Adjustments
 	public function pxp_set_custom_edit_pxp_credit_adjustments_columns( $columns )
 	{
 		$columns = array(
-			'cb' 			=> '<input type="checkbox" />',
-			'product_id' 	=> __( 'ID' ),
-			'product_image' => __( 'Image' ),
-			'product_name' 	=> __( 'Product Name' ),
-			'product_code' 	=> __( 'Product Code' ),
-			'product_price'	=> __( 'Price' ),
-			'product_category'	=> __( 'Category' ),
-			'product_date'	=> __( 'Date' )
+			'cb' 									=> '<input type="checkbox" />',
+			'credit_adjustment_id' 	=> __( 'ID' ),
+			'date' 								=> __( 'Date' ),
+			'order_number' 				=> __( 'Order Number' ),
+			'job_reference' 				=> __( 'Job Reference' ),
+			'contact_name'				=> __( 'Contact Name' ),
+			'amount'							=> __( 'Amount' ),
+			'description'						=> __( 'Description' ),
 		);
 		
 		return $columns;
@@ -60,8 +60,8 @@ class PXP_Credit_Adjustments
 	{		
 		switch ($column) 
 		{
-			case 'product_id':
-				$product_id = get_post_meta( $post_id, '_product_id', true );
+			case 'credit_adjustment_id':
+				$credit_adjustment_id = get_post_meta( $post_id, '_credit_adjustment_id', true );
 				
 				$edit 		= get_edit_post_link( $post_id );
 				$trash 		= get_delete_post_link( $post_id );
@@ -96,53 +96,40 @@ class PXP_Credit_Adjustments
 					</div>';
 				}
 				
-				printf( __( '<a href="%s"><strong>%s</strong></a> %s', '%s' ), $edit, $product_id, $row_action );
+				printf( __( '<a href="%s"><strong>%s</strong></a> %s', '%s' ), $edit, $credit_adjustment_id, $row_action );
 				
 				
 				break;
-			case 'product_image':
-				if ( has_post_thumbnail() ) { // check if the post has a Post Thumbnail assigned to it.
-					the_post_thumbnail();
-				} 
+			case 'date':
+				$date = get_post_meta( $post_id, '_date', true );
+				
+				printf( __( '%s', '%s' ), $date );
 				break;
-			case 'product_name':
-				$product_name = get_the_title();
+			case 'order_number':
+				$order_number = get_post_meta( $post_id, '_order_number', true );
 				
-				printf( __( '%s', '%s' ), $product_name );
+				printf( __( '%s', '%s' ), $order_number );
 				break;
-			case 'product_code':
-				$product_code = get_post_meta( $post_id, '_product_code', true );
+			case 'job_reference':
+				$job_reference = get_post_meta( $post_id, '_job_reference', true );
 				
-				printf( __( '%s', '%s' ), $product_code );
+				printf( __( '%s', '%s' ), $job_reference );
 				break;
-			case 'product_price':
-				$product_price = get_post_meta( $post_id, '_product_price', true );
+			case 'contact_name':
+				$contact_name = get_post_meta( $post_id, '_contact_name', true );
 				
-				printf( __( '%s', '%s' ), $product_price );
+				printf( __( '%s', '%s' ), $contact_name );
 				break;
-			case 'product_category':
-				$args = array(
-					'orderby' 	=> 'name', 
-					'order' 	=> 'ASC', 
-					'fields' 	=> 'all'
-				);
+			case 'amount':
 				
-				$terms = wp_get_post_terms( $post_id, 'pxp_product_categories', $args );
+				$amount = get_post_meta( $post_id, '_amount', true );
 				
-				$product_categories = array();
-				
-				foreach( $terms as $term ):
-					$product_categories[] = '<a href="' . admin_url( 'edit.php?pxp_product_categories=' . $term->slug . '&post_type=pxp_products' ) . '">' . $term->name . '</a>';
-				endforeach;
-				
-				$product_categories = implode( ", ", $product_categories );
-				
-				printf( __( '%s', '%s' ), $product_categories );
+				printf( __( '%s', '%s' ), $amount );
 				break;
-			case 'product_date':
-				$product_date = get_the_date( 'm/d/Y' );
+			case 'description':
+				$description = get_post_meta( $post_id, '_description', true );
 				
-				printf( __( '%s', '%s' ), $product_date );
+				printf( __( '%s', '%s' ), $description );
 				break;
 		}
 	}
@@ -154,15 +141,75 @@ class PXP_Credit_Adjustments
 	 */
 	public function pxp_edit_credit_adjustments_sortable_columns( $columns ) {
 
-		$columns['product_id'] 		= 'product_id';
-		$columns['product_name'] 	= 'product_name';
-		$columns['product_code'] 	= 'product_code';
-		$columns['product_price'] 	= 'product_price';
-		$columns['product_category']= 'product_category';
-		$columns['product_date'] 	= 'date';
+		$columns['credit_adjustment_id'] 		= 'credit_adjustment_id';
+		$columns['date'] 									= 'date';
+		$columns['order_number'] 					= 'order_number';
+		$columns['job_reference'] 					= 'job_reference';
+		$columns['contact_name'] 					= 'contact_name';
+		$columns['amount'] 							= 'amount';
+		$columns['description'] 						= 'description';
+
 		
 		return $columns;
 	}
+/**
+	 * Display Credit Adjustment details metebox.
+ */
+ public static function pxp_credit_adjustments_general_box()
+ {
+		global $post_id;
+  
+		//Add an nonce field so we can check it later.
+		wp_nonce_field('pxp_credit_adjustments', 'pxp_credit_adjustments_nonce');
+  
+		$credit_adjustment_id 		= get_post_meta( $post_id, '_credit_adjustment_id', true);
+		$date									= get_post_meta( $post_id, '_date', true);
+		$order_number					= get_post_meta( $post_id, '_order_number', true);
+		$job_reference 					= get_post_meta( $post_id, '_job_reference', true);
+		$contact_name					= get_post_meta( $post_id, '_contact_name', true);
+		$amount								= get_post_meta( $post_id, '_amount', true);
+		$description						= get_post_meta( $post_id, '_description', true);
+		
+  
+  
+  
+ 
+ ?>
+	<table class="form-table pxp_credit_adjustments">
+		<tbody>
+		<!--	<tr valign="top">
+				<th><?//php _e( 'ID:' ); ?></th>
+					<td><input type="text" name="credit_adjustment_id" id="credit_adjustment_id" value="<?php //echo $credit_adjustment_id; ?>" class="regular-text" readonly /></td>
+			</tr>
+			<tr valign="top">
+					<th><?//php _e( 'Date:' ); ?></th>
+					<td><input type="text" name="date" id="date" class="regular-text datepicker"  readonly/></td>
+			</tr> !-->
+				<tr valign="top">
+				<th><?php _e( 'Contact Name:' ); ?></th>
+					<td><input type="text" name="contact_name" id="contact_name" value="<?php echo $contact_name; ?>" class="regular-text" /></td>
+			</tr>
+				<tr valign="top">
+				<th><?php _e( 'Order Number:' ); ?></th>
+					<td><input type="text" name="order_number" id="order_number" value="<?php echo $order_number; ?>" class="regular-text" /></td>
+			</tr>
+				<tr valign="top">
+				<th><?php _e( 'Job Reference:' ); ?></th>
+					<td><input type="text" name="job_reference" id="job_reference" value="<?php echo $job_reference; ?>" class="regular-text" /></td>
+			</tr>
+				<tr valign="top">
+				<th><?php _e( 'Amount:' ); ?></th>
+					<td><input type="text" name="amount" id="amount" value="<?php echo $amount; ?>" class="regular-text" /></td>
+			</tr>
+				<tr valign="top">
+				<th><?php _e( 'Description:' ); ?></th>
+					<td><input type="text" name="description" id="description" value="<?php echo $description; ?>" class="regular-text" /></td>
+			</tr>
+		</tbody>
+	</table>
+ <?php
+ }
+ 
 }
 
 }
