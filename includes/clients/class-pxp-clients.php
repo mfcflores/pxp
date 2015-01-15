@@ -371,6 +371,9 @@ class PXP_Clients
 		$order_id = ( isset( $_GET['order'] ) ) ? $_GET['order'] : NULL;
 
 		echo $order_id;
+		echo $order_id;
+		echo $order_id;
+		echo $order_id;
 	}
 	
 	/**

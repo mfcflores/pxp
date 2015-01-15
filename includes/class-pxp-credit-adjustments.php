@@ -21,7 +21,7 @@ class PXP_Credit_Adjustments
 	public function __construct()
 	{
 		// Add Actions
-		//add_action( 'save_post', array( $this, 'pxp_credit_adjustment_save_post' ), 10, 2 );
+		add_action( 'save_post', array( $this, 'pxp_credit_adjustment_save_post' ), 10, 2 );
 		add_action('manage_pxp_adjustments_posts_custom_column', array($this, 'pxp_credit_adjustments_posts_custom_column'), 10, 2);
 		
 		// Add Filters
@@ -38,7 +38,7 @@ class PXP_Credit_Adjustments
 	{
 		$columns = array(
 			'cb' 									=> '<input type="checkbox" />',
-			'credit_adjustment_id' 	=> __( 'ID' ),
+			'credit_adjustment_id'		=> __('ID'),
 			'date' 								=> __( 'Date' ),
 			'order_number' 				=> __( 'Order Number' ),
 			'job_reference' 				=> __( 'Job Reference' ),
@@ -61,7 +61,7 @@ class PXP_Credit_Adjustments
 		switch ($column) 
 		{
 			case 'credit_adjustment_id':
-				$credit_adjustment_id = get_post_meta( $post_id, '_credit_adjustment_id', true );
+				$credit_adjustment_id =  get_the_ID();
 				
 				$edit 		= get_edit_post_link( $post_id );
 				$trash 		= get_delete_post_link( $post_id );
@@ -113,7 +113,7 @@ class PXP_Credit_Adjustments
 			case 'job_reference':
 				$job_reference = get_post_meta( $post_id, '_job_reference', true );
 				
-				printf( __( '%s', '%s' ), $job_reference );
+				printf( __( '%s', '%s' ), $job_reference  );
 				break;
 			case 'contact_name':
 				$contact_name = get_post_meta( $post_id, '_contact_name', true );
@@ -141,7 +141,6 @@ class PXP_Credit_Adjustments
 	 */
 	public function pxp_edit_credit_adjustments_sortable_columns( $columns ) {
 
-		$columns['credit_adjustment_id'] 		= 'credit_adjustment_id';
 		$columns['date'] 									= 'date';
 		$columns['order_number'] 					= 'order_number';
 		$columns['job_reference'] 					= 'job_reference';
@@ -160,9 +159,9 @@ class PXP_Credit_Adjustments
 		global $post_id;
   
 		//Add an nonce field so we can check it later.
-		wp_nonce_field('pxp_credit_adjustments', 'pxp_credit_adjustments_nonce');
+		wp_nonce_field('pxp_adjustments', 'pxp_adjustments_nonce');
   
-		$credit_adjustment_id 		= get_post_meta( $post_id, '_credit_adjustment_id', true);
+		$credit_adjustment_id			= get_the_ID();
 		$date									= get_post_meta( $post_id, '_date', true);
 		$order_number					= get_post_meta( $post_id, '_order_number', true);
 		$job_reference 					= get_post_meta( $post_id, '_job_reference', true);
@@ -175,16 +174,16 @@ class PXP_Credit_Adjustments
   
  
  ?>
-	<table class="form-table pxp_credit_adjustments">
+	<table class="form-table pxp_adjustments">
 		<tbody>
-		<!--	<tr valign="top">
-				<th><?//php _e( 'ID:' ); ?></th>
-					<td><input type="text" name="credit_adjustment_id" id="credit_adjustment_id" value="<?php //echo $credit_adjustment_id; ?>" class="regular-text" readonly /></td>
-			</tr>
 			<tr valign="top">
+				<th><?php _e( 'ID:' ); ?></th>
+					<td><input type="text" name="credit_adjustment_id" id="credit_adjustment_id" value="<?php echo $credit_adjustment_id; ?>" class="regular-text" readonly /></td>
+			</tr>
+			<!--<tr valign="top">
 					<th><?//php _e( 'Date:' ); ?></th>
-					<td><input type="text" name="date" id="date" class="regular-text datepicker"  readonly/></td>
-			</tr> !-->
+					<td><input type="text" name="date" id="date" value="<?//php echo $date; ?>" class="regular-text "  readonly/></td>
+			</tr>  !-->
 				<tr valign="top">
 				<th><?php _e( 'Contact Name:' ); ?></th>
 					<td><input type="text" name="contact_name" id="contact_name" value="<?php echo $contact_name; ?>" class="regular-text" /></td>
@@ -208,6 +207,59 @@ class PXP_Credit_Adjustments
 		</tbody>
 	</table>
  <?php
+ }
+ 
+ 	/**
+	 * Update credit adjustments details.
+	 * @param int 		$post_id 	The ID of post.
+	 * @param WP_Post 	$post 		The post object.
+	 */
+ 
+ public function pxp_credit_adjustment_save_post($post_id, $post)
+ {
+
+	if( !isset($_POST['pxp_adjustments_nonce'] ) ) { return $post_id; }
+	
+	$nonce = $_POST['pxp_adjustments_nonce'];
+	
+	if( !wp_verify_nonce($nonce, 'pxp_adjustments') ) { return $post_id; }
+	
+	if( 'page' == $_POST['post_type'] )
+	{	
+		if( !current_user_can('edit_page', $post_id) )  { return $post_id; }
+	}
+	else
+	{	
+		if( !current_user_can('edit_post', $post_id) ) { return $post_id; }
+	}
+	
+	if( $post->post_type != "pxp_adjustments") 
+	{
+		return $post_id;
+	}
+	
+		//$credit_adjustment_id 		= $_POST['credit_adjustment_id'];
+		//$date									= $_POST['date'];
+		$order_number					= $_POST['order_number'];
+		$job_reference 					= $_POST['job_reference'];
+		$contact_name					= $_POST['contact_name'];
+		$amount								= $_POST['amount'];
+		$description						= $_POST['description'];
+	
+		$data = array (
+			//'credit_adjustment_id'		=> $credit_adjustment_id,
+			//'date'								=> $date,
+			'order_number'				=> $order_number,
+			'job_reference'				=> $job_reference,
+			'contact_name'				=> $contact_name,
+			'amount'							=> $amount,
+			'description'						=> $description,
+		);
+		
+		foreach( $data as $key => $value )
+		{
+			update_post_meta( $post_id, '_' .$key, $value );
+		}
  }
  
 }
