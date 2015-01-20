@@ -127,7 +127,7 @@ class PXP_Clients
 					<select name="pxp_country" id="pxp_country">
 						<option value="">Select Country</option>
 					<?php foreach( $this->countries as $key => $value ): ?>
-						<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+						<option value="<?php echo $key; ?>" <?php echo ( $pxp_country == $key ) ? "selected" : ""; ?>><?php echo $value; ?></option>
 					<?php endforeach; ?>
 					</select>
 				</td>
@@ -218,6 +218,19 @@ class PXP_Clients
 	 */
 	public static function pxp_client_credits()
 	{
+		global $user_ID;
+		
+		$current_credits = get_user_meta( $user_ID, 'pxp_user_credits', true );
+		
+		$args = array(
+			'posts_per_page'	=> -1,
+			'post_type'			=> 'pxp_credit_blocks',
+			'order'				=> 'ASC',
+			'orderby'			=> 'meta_value_num',
+			'meta_key'			=> '_credit_amount'
+		);
+		
+		$query = new WP_Query( $args );
 ?>
 		<div id="pxp-credits-page">
 			<div class="pxp-credit-box">
@@ -234,48 +247,40 @@ class PXP_Clients
 				</h4>
 			</div>
 			<div class="pxp-credit-box text-center">
-				<div class="pxp-credit">
-					<div class="row">
-						<h3>500 Credits</h3>
-					</div>
-						<div id="content" class="row">
-							<p>$500</p>
-							<p>500 Credits</p>
-							<p>+5% Credits</p>
-						</div>
-							<div id="btn" class="row">
-								<button type="button" class="btn">Buy</button>
+			<?php
+				global $post;
+				
+				if( $query->have_posts() ) :
+					while( $query->have_posts() ) :
+						$query->the_post();
+						
+						$post_id		= $post->ID;
+						$credit_price 	= get_post_meta( $post_id, '_credit_price', true);
+						$credit_amount 	= get_post_meta( $post_id, '_credit_amount', true);
+						$credit_bonus	= get_post_meta( $post_id, '_credit_bonus', true);
+						
+						$total_credit	= $credit_amount + ( $credit_amount * ( $credit_bonus/100 ) );
+			?>
+						<div class="pxp-credit">
+							<div class="row">
+								<h3><?php _e( $total_credit . ' Credits' ); ?></h3>
 							</div>
-				</div>
-				<div class="pxp-credit">
-					<div class="row">
-						<h3>100 Credits</h3>
-					</div>
-						<div id="content" class="row">
-							<p>$100</p>
-							<p>100 Credits</p>
-							<p>+10 Credits</p>
-						</div>
-							<div id="btn" class="row">
-								<button type="button" class="btn">Buy</button>
+							<div id="content" class="row">
+								<p><?php _e( '$' . $credit_price ); ?></p>
+								<p><?php _e( $credit_amount . ' Credits' ); ?></p>
+								<p><?php _e( '+' . $credit_bonus . '% Credits' ); ?></p>
 							</div>
-				</div>
-				<div class="pxp-credit">
-					<div class="row">
-						<h3>Any Amount</h3>
-					</div>
-						<div id="content" class="row">
-							<p>Lorem ipsum dolor </p>
-							<p>adipiscing eli</p>
-							<p>sit amet</p>
-						</div>
 							<div id="btn" class="row">
-								<button type="button" class="btn">Buy</button>
+								<button type="button" id="credit-block-<?php echo $post_id; ?>" value="<?php echo $post_id; ?>" class="btn">Buy</button>
 							</div>
-				</div>
+						</div>
+			<?php
+					endwhile;
+				endif;
+			?>
 			</div>
 			<div class="pxp-credit-box">
-				<h4 >
+				<h4>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. Quisque odio enim, vulputate in felis vel, tincidunt rutrum ex. Quisque fringilla accumsan sapien nec gravida. 
 				</h4>
 			</div>
@@ -370,9 +375,6 @@ class PXP_Clients
 	{
 		$order_id = ( isset( $_GET['order'] ) ) ? $_GET['order'] : NULL;
 
-		echo $order_id;
-		echo $order_id;
-		echo $order_id;
 		echo $order_id;
 	}
 	

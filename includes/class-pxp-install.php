@@ -21,8 +21,7 @@ class PXP_Install
 	public function __construct()
 	{
 		// Run function on plugin activation.
-		register_activation_hook( PXP_FILE, array( $this, 'add_roles_on_plugin_activation' ) );
-		register_activation_hook( PXP_FILE, array( $this, 'add_options_on_plugin_activation' ) );
+		register_activation_hook( PXP_FILE, array( $this, 'pxp_install' ) );
 		
 		// Run function on plugin deactivation.
 		register_deactivation_hook( PXP_FILE, array( $this, 'remove_roles_on_plugin_deactivation' ) );
@@ -32,11 +31,28 @@ class PXP_Install
 	}
 	
 	/**
+	 * Run functions on activation.
+	 */
+	public function pxp_install()
+	{
+		// Create important pages on activation.
+		$this->create_pxp_pages();
+		
+		// Add options on activation.
+		$this->add_options_on_plugin_activation();
+		
+		// Add roles on activation.
+		$this->add_roles_on_plugin_activation();
+	}
+	
+	/**
 	 * Add options on plugin activation.
 	 */
 	public function add_options_on_plugin_activation()
 	{
-		add_option( 'pxp_product_id', 1 ); // Set Product ID to 1.
+		add_option( 'pxp_product_id', 1 );	// Set Product ID to 1.
+		add_option( 'pxp_promo_id', 1 );	// Set Promo ID to 1. 
+		add_option( 'pxp_credit_block_id', 1 );	// Set Promo ID to 1. 
 	}
 	
 	/**
@@ -45,13 +61,7 @@ class PXP_Install
 	public function add_roles_on_plugin_activation()
 	{
 		// Client
-		add_role(
-			'pxp_client',
-			__( 'Client' ),
-			array(
-				'read'			=> true
-			)
-		);
+		add_role( 'pxp_client',	__( 'Client' ),	array( 'read' => true ) );
 		
 		// Project Manager
 		/**
@@ -97,6 +107,50 @@ class PXP_Install
 		);
 	}
 	
+	/**
+	 * Create important pages of plugin when installed.
+	 */
+	public function create_pxp_pages()
+	{
+		$pages = array(
+			array(
+				'name'		=> 'registration',
+				'title'		=> 'Registration',
+				'content'	=> ''
+			),
+			array(
+				'name'		=> 'cart',
+				'title'		=> 'Cart',
+				'content'	=> ''
+			),
+			array(
+				'name'		=> 'order',
+				'title'		=> 'Order',
+				'content'	=> ''
+			),
+			array(
+				'name'		=> 'login', 
+				'title'		=> 'Login',
+				'content'	=> ''
+			),
+			array(
+				'name'		=> 'search',
+				'title'		=> 'Search',
+				'content'	=> ''
+			),
+			array(
+				'name'		=> 'product',
+				'title'		=> 'Product',
+				'content'	=> ''
+			),
+			array(
+				'name'		=> 'selected-product',
+				'title'		=> 'Selected Product',
+				'content'	=> ''
+			)
+		);
+	}
+		
 	/**
 	 * Remove roles on plugin deactivation to modify or update capabilities.
 	 */

@@ -38,8 +38,9 @@ class PXP_Credit_Blocks
 	{
 		$columns = array(
 			'cb' 			=> '<input type="checkbox" />',
-			'credit_amount' => __( 'Amount' ),
-			'credit_bonus' 	=> __( 'Bonus' ),
+			'credit_amount' 	=> __( 'Amount' ),
+			'credit_price' 		=> __( 'Price' ),
+			'credit_bonus' 		=> __( 'Bonus' ),
 		);
 		
 		return $columns;
@@ -90,6 +91,11 @@ class PXP_Credit_Blocks
 				
 				printf( __( '<a href="%s"><strong>%s</strong></a> %s', '%s' ), $edit, $credit_amount, $row_action );
 				break;
+			case 'credit_price':
+				$credit_price = get_post_meta( $post_id, '_credit_price', true );
+				
+				printf( __( '%s', '%s' ), '$' . $credit_price );
+				break;
 			case 'credit_bonus':
 				$credit_bonus = get_post_meta( $post_id, '_credit_bonus', true );
 				
@@ -106,6 +112,7 @@ class PXP_Credit_Blocks
 	public function pxp_edit_credit_blocks_sortable_columns( $columns ) 
 	{
 		$columns['credit_amount'] 	= 'credit_amount';
+		$columns['credit_price'] 	= 'credit_price';
 		$columns['credit_bonus'] 	= 'credit_bonus';
 		
 		return $columns;
@@ -120,19 +127,25 @@ class PXP_Credit_Blocks
 		
 		// Add an nonce field so we can check for it later.
 		wp_nonce_field( 'pxp_credit_blocks', 'pxp_credit_blocks_nonce' );
-		
+
+		$credit_price 	= get_post_meta( $post_id, '_credit_price', true);
 		$credit_amount 	= get_post_meta( $post_id, '_credit_amount', true);
 		$credit_bonus	= get_post_meta( $post_id, '_credit_bonus', true);
 ?>
+		<input name="pxp_admin_a" type="hidden" value="<?php echo ($post_id != NULL) ? "edit_credit_block" : "add_credit_block"; ?>">
 		<table class="form-table pxp_credit_blocks">
 			<tbody>
 				<tr valign="top">
+					<th><?php _e( 'Price:' ); ?></th>
+					<td><input type="text" name="credit_price" id="pxp_credit_price" value="<?php echo $credit_price; ?>" class="regular-text" /></td>
+				</tr>
+				<tr valign="top">
 					<th><?php _e( 'Amount:' ); ?></th>
-					<td><input type="text" name="credit_amount" id="credit_amount" value="<?php echo $credit_amount; ?>" class="regular-text" /></td>
+					<td><input type="text" name="credit_amount" id="pxp_credit_amount" value="<?php echo $credit_amount; ?>" class="regular-text" /></td>
 				</tr>
 				<tr valign="top">
 					<th><?php _e( 'Bonus:' ); ?></th>
-					<td><input type="text" name="credit_bonus" id="credit_bonus" value="<?php echo $credit_bonus; ?>" class="regular-text" /></td>
+					<td><input type="text" name="credit_bonus" id="pxp_credit_bonus" value="<?php echo $credit_bonus; ?>" class="regular-text" /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -166,12 +179,12 @@ class PXP_Credit_Blocks
 			return $post_id;
 		}
 		
-		
-		
+		$credit_price	= $_POST['credit_price'];
 		$credit_amount	= $_POST['credit_amount'];
 		$credit_bonus	= $_POST['credit_bonus'];
 
 		$data = array(
+			'credit_price'	=> $credit_price,
 			'credit_amount'	=> $credit_amount,
 			'credit_bonus'	=> $credit_bonus,
 		);

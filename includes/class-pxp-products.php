@@ -212,7 +212,7 @@ class PXP_Products
 					<label for="pxp_product_code"><?php _e( 'Product Code' ); ?></label>
 				</th>
 				<td>
-					<input type="text" id="pxp_product_code" name="pxp_product_code" value="<?php echo $product_code; ?>" class="regular-text" />
+					<input type="text" name="product_code" id="pxp_product_code" value="<?php echo $product_code; ?>" class="regular-text" />
 				</td>
 			</tr>
 			<tr>
@@ -345,7 +345,7 @@ class PXP_Products
 				update_post_meta( $post_id, '_product_id', $product_id );
 				
 				// Update Product ID option.
-				update_option( $product_id + 1 );
+				update_option( 'pxp_product_id', $product_id + 1 );
 			endif;
 		}
 		

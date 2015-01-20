@@ -28,6 +28,8 @@ class PXP_Admin_Menus
 		
 		// Include files
 		include_once( 'admin/class-pxp-admin-core.php' );
+		
+		include_once( 'class-pxp-ajax.php' );
 	}
 	
 	/**

@@ -91,7 +91,8 @@ final class PixelPartners
 		// Plugin roles
 		include_once( 'includes/class-pxp-roles.php' );
 		
-		
+		// Custom Page Templates
+		include_once( 'includes/templates/class-pxp-templates.php' );
 		
 		// Client side page
 		include_once( 'includes/clients/class-pxp-clients.php' );
@@ -112,12 +113,17 @@ final class PixelPartners
 	 */
 	public function pxp_actions()
 	{
+		add_action( 'wp_head', array( $this, 'pxp_wp_head' ) );
 	}
 	
 	/**
 	 * Initiate Plugin Filters.
 	 */
 	public function pxp_filters()
+	{
+	}
+	
+	public function pxp_wp_head()
 	{
 	}
 }

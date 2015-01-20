@@ -35,6 +35,9 @@ class PXP_Admin_Assets
 		wp_register_script	( 'jquery-ui', PXP_URL . '/assets/js/jquery-ui.js');
 		wp_enqueue_script	( 'jquery-ui' );
 		
+		wp_register_script	( 'jquery-autocomplete', PXP_URL . '/assets/js/jquery.autocomplete.js');
+		wp_enqueue_script	( 'jquery-autocomplete' );
+		
 		wp_register_style	( 'jquery-ui-style', PXP_URL . '/assets/css/jquery-ui.css');
 		wp_enqueue_style	( 'jquery-ui-style' );
 		
@@ -44,6 +47,8 @@ class PXP_Admin_Assets
 			
 			wp_enqueue_media();
 		}
+		
+		wp_enqueue_script	( 'password-strength-meter' );
 		
 		wp_register_style	( 'pxp-fontawesome', PXP_URL . '/assets/css/font-awesome.min.css' );
 		wp_enqueue_style	( 'pxp-fontawesome' );

@@ -20,6 +20,7 @@ class PXP_Admin_Core
 {
 	public function __construct()
 	{
+		include_once( 'class-pxp-admin-clients.php' );
 	}
 	
 	/**
@@ -27,8 +28,6 @@ class PXP_Admin_Core
 	 */
 	public static function pxp_admin_clients()
 	{
-		include_once( 'class-pxp-admin-clients.php' );
-		
 		PXP_Admin_Clients::pxp_admin_clients();
 	}
 }

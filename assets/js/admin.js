@@ -1,8 +1,13 @@
 jQuery(document).ready(function($) {
+	
+	
 	$(".datepicker").datepicker({
 		dateFormat: 'mm/dd/yy'
 	});
 
+	$( "#pxp-tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+	$( "#pxp-tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+		
 	/**
 	 * Add image to product gallery.
 	 */
@@ -85,4 +90,132 @@ jQuery(document).ready(function($) {
 			ui.item.removeAttr('style');
 		}
 	});
+	
+	$('.search-list-container').click(function(e) {
+		// Target only parent.
+		if (e.target == this) { 
+           $(this).find(".search-box .autocomplete").focus();
+        }
+	});
+	
+	$('.search-list-container').on( 'click', '.promo-remove', function(e) {
+		e.preventDefault();
+		$(this).parent().remove();
+	});
+	
+	
+	// Get Products
+	var products = product_list();
+	function product_list() {
+		var pxp_products = [];
+		
+		$.ajax({
+			url: ajaxurl,
+			global: false,
+			async: false,
+			type: "POST",
+			dataType: "JSON",
+			data: {
+				action : "pxp_get_products"
+			},
+			success: function( data ){
+				pxp_products = data;
+			}
+		});
+		
+		return pxp_products;
+	}
+	
+	/**
+	 * Initiate auto complete after window load.
+	 * @var products Product List.
+	 */
+	$(window).load( function() {
+		// Initialize autocomplete with custom appendTo:
+		$('.promo_allowed_products .autocomplete').autocomplete({
+			lookup: products,
+			minChars: 1,
+			appendTo: '.promo_allowed_products',
+			triggerSelectOnValidInput: false,
+			onSelect: function( suggestion ) {
+				var input_name = $(this).data('name');
+				$('<li class="search-list"><span id="promo_allowed_products-' + suggestion.data.product_id + '">' + suggestion.value + '</span> <i class="promo-remove fa fa-remove"></i><input name="promo_allowed_products[]" type="hidden" value="' + suggestion.data.post_id + '"></li>').insertBefore( $(this).parent() );
+			}
+		});
+		
+		$('.promo_excluded_products .autocomplete').autocomplete({
+			lookup: products,
+			minChars: 1,
+			appendTo: '.promo_excluded_products',
+			triggerSelectOnValidInput: false,
+			onSelect: function( suggestion ) {
+				var input_name = $(this).data('name');
+				$('<li class="search-list"><span id="promo_excluded_products-' + suggestion.data.product_id + '">' + suggestion.value + '</span> <i class="promo-remove fa fa-remove"></i><input name="promo_excluded_products[]" type="hidden" value="' + suggestion.data.post_id + '"></li>').insertBefore( $(this).parent() );
+			}
+		});
+	});
+	
+
+	// Binding to trigger checkPasswordStrength
+    $( '#pxp-createclient' ).on( 'keyup', 'input[name=pass1], input[name=pass2]',
+        function( event ) {
+            checkPasswordStrength(
+                $('input[name=pass1]'),         // First password field
+                $('input[name=pass2]'), 		// Second password field
+                $('#pass-strength-result'),     // Strength meter
+                $('button[type=submit]'),       // Submit button
+                []     // Blacklisted words
+            );
+        }
+    );
+
+	function checkPasswordStrength( $pass1, $pass2, $strengthResult, $submitButton, blacklistArray ) {
+        var pass1 = $pass1.val();
+		var pass2 = $pass2.val();
+	 
+		// Reset the form & meter
+		//$submitButton.attr( 'disabled', 'disabled' );
+		$strengthResult.removeClass( 'short bad good strong' );
+	 
+		// Extend our blacklist array with those from the inputs & site data
+		blacklistArray = blacklistArray.concat( wp.passwordStrength.userInputBlacklist() )
+	 
+		// Get the password strength
+		var strength = wp.passwordStrength.meter( pass1, blacklistArray, pass2 );
+	 
+		// Add the strength meter results
+		switch ( strength ) {
+	 
+			case 2:
+				$strengthResult.addClass( 'bad' ).html( pwsL10n.bad );
+				break;
+	 
+			case 3:
+				$strengthResult.addClass( 'good' ).html( pwsL10n.good );
+				break;
+	 
+			case 4:
+				$strengthResult.addClass( 'strong' ).html( pwsL10n.strong );
+				break;
+	 
+			case 5:
+				$strengthResult.addClass( 'short' ).html( pwsL10n.mismatch );
+				break;
+	 
+			default:
+				$strengthResult.addClass( 'short' ).html( pwsL10n.short );
+	 
+		}
+	 
+		// The meter function returns a result even if pass2 is empty,
+		// enable only the submit button if the password is strong and
+		// both passwords are filled up
+		if ( '' !== pass2.trim() ) {
+			$submitButton.removeAttr( 'disabled' );
+		}
+	 
+		return strength;
+	}
 });
+
+
