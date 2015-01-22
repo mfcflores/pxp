@@ -102,7 +102,8 @@ class PXP_Promo_Codes
 				
 				break;
 			case 'promo_code':
-				$promo_code = get_post_meta( $post_id, '_promo_code', true );
+				//$promo_code = get_post_meta( $post_id, '_promo_code', true );
+				$promo_code = get_the_title();
 				
 				printf( __( '%s', '%s' ), $promo_code );
 				break;
@@ -122,7 +123,7 @@ class PXP_Promo_Codes
 				printf( __( '%s', '%s' ), $product_id );
 				break;
 			case 'promo_usage':
-				$promo_usage = get_post_meta( $post_id, '_promo_usage', true );
+				$promo_usage = get_post_meta( $post_id, '_promo_usage_coupon', true );
 				
 				printf( __( '%s', '%s' ), $promo_usage );
 				break;

@@ -94,9 +94,8 @@ class Client_Tranasactions_List_Table extends WP_List_Table {
      **************************************************************************/
     function column_default($item, $column_name){
         switch($column_name){
-			case 'ID':
-            case 'transaction_description':
 			case 'transaction_date':
+            case 'transaction_description':
                 return $item[$column_name];
             default:
 				return $item[$column_name];
@@ -170,10 +169,10 @@ class Client_Tranasactions_List_Table extends WP_List_Table {
     function get_columns(){
         $columns = array(
             'cb'        				=> '<input type="checkbox" />', //Render a checkbox instead of text
-            'ID'     					=> 'ID',
-			'transaction_description'	=> 'Description',
+            //'ID'     					=> 'ID',		
 			'transaction_date'			=> 'Date',
-        );
+			'transaction_description'	=> 'Description',
+		);
 		
         return $columns;
     }
@@ -194,7 +193,7 @@ class Client_Tranasactions_List_Table extends WP_List_Table {
      **************************************************************************/
     function get_sortable_columns() {
         $sortable_columns = array(
-            'ID'     					=> array('ID', true),     //true means it's already sorted
+            //'ID'     					=> array('ID', true),     //true means it's already sorted
 			'transaction_description'	=> array('transaction_description', false),
             'transaction_date'  		=> array('transaction_date', false),
         );
