@@ -89,7 +89,7 @@ class PXP_Clients
 		<table class="form-table">
 			<tr>
 				<th>
-					<label for="pxp_street"><?php _e( 'Street' ); ?></label>
+					<label for="pxp_street"><?php _e( 'Address Line 1' ); ?></label>
 				</th>
 				<td>
 					<input type="text" name="pxp_street" id="pxp_street" value="<?php echo $pxp_street; ?>" class="regular-text" />
@@ -97,7 +97,7 @@ class PXP_Clients
 			</tr>
 			<tr>
 				<th>
-					<label for="pxp_street"><?php _e( 'Street' ); ?></label>
+					<label for="pxp_address"><?php _e( 'Address Line 2' ); ?></label>
 				</th>
 				<td>
 					<input type="text" name="pxp_address" id="pxp_address" value="<?php echo $pxp_address; ?>" class="regular-text" />
@@ -157,6 +157,14 @@ class PXP_Clients
 					<input <?php echo ( $pxp_other == true ) ? "checked" : ""; ?> type="checkbox" name="pxp_other" id="pxp_other" value="other" />
 					<span><?php _e( 'Other' ); ?></span>
 					<input type="text" name="pxp_other_desc" id="pxp_other_desc" value="<?php echo ( $pxp_other == true ) ? $pxp_other_desc : ""; ?>" class="regular-text" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="pxp_if_adobe"><?php _e( 'If Adobe - (Adobe Creative Suite Version)' ); ?></label>
+				</th>
+				<td>
+					<input type="text" name="pxp_if_adobe" id="pxp_if_adobe" value="<?php echo ""; ?>" class="regular-text" />
 				</td>
 			</tr>
 			<tr>

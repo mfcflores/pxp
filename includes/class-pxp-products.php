@@ -175,6 +175,7 @@ class PXP_Products
 		wp_nonce_field( 'pxp_products', 'pxp_products_nonce' );
 		
 		$product_id 	= ( $post_id != NULL ) ? get_post_meta( $post_id, '_product_id', true ): get_option( 'pxp_product_id' );
+		//$product_id 	= get_post_meta( $post_id, '_product_id', true );
 		
 		$product_code	= get_post_meta( $post_id, '_product_code', true );
 		
@@ -196,9 +197,9 @@ class PXP_Products
 			  );
 			endforeach;
 		endif;
-?>
+?>												
 		<input name="pxp_admin_a" type="hidden" value="<?php echo ($post_id != NULL) ? "edit_product" : "add_product"; ?>">
-		<table class="form-table">
+		<table class="form-table pxp_products">
 			<tr>
 				<th>
 					<label for="pxp_product_id"><?php _e( 'Product ID' ); ?></label>

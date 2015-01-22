@@ -177,13 +177,13 @@ class PXP_Admin_Clients
 			<table class="form-table">
 				<tr>
 					<th>
-						<label for="pxp_street"><?php _e( 'Street' ); ?></label>
+						<label for="pxp_street"><?php _e( 'Address Line 1' ); ?></label>
 					</th>
 					<td><input type="text" name="pxp_street" id="pxp_street" class="regular-text" /></td>
 				</tr>
 				<tr>
 					<th>
-						<label for="pxp_street"><?php _e( 'Street' ); ?></label>
+						<label for="pxp_street"><?php _e( 'Address Line 2' ); ?></label>
 					</th>
 					<td><input type="text" name="pxp_address" id="pxp_address" class="regular-text" /></td>
 				</tr>
@@ -239,6 +239,14 @@ class PXP_Admin_Clients
 						<input type="text" name="pxp_other_desc" id="pxp_other_desc" class="regular-text" />
 					</td>
 				</tr>
+			<tr>
+				<th>
+					<label for="pxp_if_adobe"><?php _e( 'If Adobe - (Adobe Creative Suite Version)' ); ?></label>
+				</th>
+				<td>
+					<input type="text" name="pxp_if_adobe" id="pxp_if_adobe" value="<?php echo ""; ?>" class="regular-text" />
+				</td>
+			</tr>
 				<tr>
 					<th>
 						<label for="pxp_professional_association"><?php _e( 'Professional Association' ); ?></label>
@@ -361,7 +369,7 @@ class PXP_Admin_Clients
 				'contact_name'		=> $first_name . ' ' . $last_name,
 				'company_name'		=> $pxp_company_name,
 				'client_email'    	=> $user->user_email,
-				'client_address'    => 'Address'
+				'client_address'    => $pxp_street. ', ' . $pxp_city. ', '. $pxp_country 
 			);
 		}
 		
