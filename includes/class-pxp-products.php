@@ -22,11 +22,11 @@ class PXP_Products
 	{
 		// Add Actions
 		add_action( 'save_post', array( $this, 'pxp_product_save_post' ), 10, 2 );
-		add_action('manage_pxp_products_posts_custom_column', array($this, 'pxp_products_posts_custom_column'), 10, 2);
+		add_action( 'manage_pxp_products_posts_custom_column', array( $this, 'pxp_products_posts_custom_column' ), 10, 2 );
 		
 		// Add Filters
-		add_filter('manage_edit-pxp_products_columns', array($this, 'pxp_set_custom_edit_pxp_products_columns'));
-		add_filter('manage_edit-pxp_products_sortable_columns', array($this, 'pxp_edit_products_sortable_columns'));
+		add_filter( 'manage_edit-pxp_products_columns', array( $this, 'pxp_set_custom_edit_pxp_products_columns' ) );
+		add_filter( 'manage_edit-pxp_products_sortable_columns', array( $this, 'pxp_edit_products_sortable_columns' ) );
 	}
 	
 	/**
@@ -175,7 +175,6 @@ class PXP_Products
 		wp_nonce_field( 'pxp_products', 'pxp_products_nonce' );
 		
 		$product_id 	= ( $post_id != NULL ) ? get_post_meta( $post_id, '_product_id', true ): get_option( 'pxp_product_id' );
-		//$product_id 	= get_post_meta( $post_id, '_product_id', true );
 		
 		$product_code	= get_post_meta( $post_id, '_product_code', true );
 		
@@ -197,9 +196,9 @@ class PXP_Products
 			  );
 			endforeach;
 		endif;
-?>												
+?>
 		<input name="pxp_admin_a" type="hidden" value="<?php echo ($post_id != NULL) ? "edit_product" : "add_product"; ?>">
-		<table class="form-table pxp_products">
+		<table class="form-table">
 			<tr>
 				<th>
 					<label for="pxp_product_id"><?php _e( 'Product ID' ); ?></label>
@@ -326,7 +325,9 @@ class PXP_Products
 		$product_price			= $_POST['product_price'];
 		$product_featured		= $_POST['product_featured'];
 		$product_form			= $_POST['product_form'];
-		$product_image_gallery  = implode( ",", $_POST['pxp_product_image_gallery'] ); // Image Gallery
+		
+		$product_image_gallery  = ( !empty( $_POST['pxp_product_image_gallery'] ) ) ? $_POST['pxp_product_image_gallery'] : array();
+		$product_image_gallery  = implode( ",",  $product_image_gallery); // Image Gallery
 
 		$data = array(
 			'product_code'			=> $product_code,
@@ -335,14 +336,14 @@ class PXP_Products
 			'product_form'			=> $product_form,
 			'product_image_gallery'	=> $product_image_gallery
 		);
-		
+	
 		// Check if Add or Edit Product
 		if( isset( $_POST['pxp_admin_a'] ) )
 		{
 			if( $_POST['pxp_admin_a'] == "add_product" ) :
 				// Get Product ID from options.
 				$product_id = get_option( 'pxp_product_id' );
-				
+
 				update_post_meta( $post_id, '_product_id', $product_id );
 				
 				// Update Product ID option.

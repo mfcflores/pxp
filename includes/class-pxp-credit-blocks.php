@@ -22,11 +22,11 @@ class PXP_Credit_Blocks
 	{
 		// Add Actions
 		add_action( 'save_post', array( $this, 'pxp_credit_blocks_save_post' ), 10, 2 );
-		add_action('manage_pxp_credit_blocks_posts_custom_column', array($this, 'pxp_credit_blocks_posts_custom_column'), 10, 2);
+		add_action( 'manage_pxp_credit_blocks_posts_custom_column', array( $this, 'pxp_credit_blocks_posts_custom_column' ), 10, 2 );
 		
 		// Add Filters
-		add_filter('manage_edit-pxp_credit_blocks_columns', array($this, 'pxp_set_custom_edit_pxp_credit_blocks_columns'));
-		add_filter('manage_edit-pxp_credit_blocks_sortable_columns', array($this, 'pxp_edit_credit_blocks_sortable_columns'));
+		add_filter( 'manage_edit-pxp_credit_blocks_columns', array( $this, 'pxp_set_custom_edit_pxp_credit_blocks_columns' ) );
+		add_filter( 'manage_edit-pxp_credit_blocks_sortable_columns', array( $this, 'pxp_edit_credit_blocks_sortable_columns' ) );
 	}
 	
 	/**

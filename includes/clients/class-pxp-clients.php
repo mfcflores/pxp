@@ -89,7 +89,7 @@ class PXP_Clients
 		<table class="form-table">
 			<tr>
 				<th>
-					<label for="pxp_street"><?php _e( 'Address Line 1' ); ?></label>
+					<label for="pxp_street"><?php _e( 'Street' ); ?></label>
 				</th>
 				<td>
 					<input type="text" name="pxp_street" id="pxp_street" value="<?php echo $pxp_street; ?>" class="regular-text" />
@@ -97,7 +97,7 @@ class PXP_Clients
 			</tr>
 			<tr>
 				<th>
-					<label for="pxp_address"><?php _e( 'Address Line 2' ); ?></label>
+					<label for="pxp_street"><?php _e( 'Street' ); ?></label>
 				</th>
 				<td>
 					<input type="text" name="pxp_address" id="pxp_address" value="<?php echo $pxp_address; ?>" class="regular-text" />
@@ -157,14 +157,6 @@ class PXP_Clients
 					<input <?php echo ( $pxp_other == true ) ? "checked" : ""; ?> type="checkbox" name="pxp_other" id="pxp_other" value="other" />
 					<span><?php _e( 'Other' ); ?></span>
 					<input type="text" name="pxp_other_desc" id="pxp_other_desc" value="<?php echo ( $pxp_other == true ) ? $pxp_other_desc : ""; ?>" class="regular-text" />
-				</td>
-			</tr>
-			<tr>
-				<th>
-					<label for="pxp_if_adobe"><?php _e( 'If Adobe - (Adobe Creative Suite Version)' ); ?></label>
-				</th>
-				<td>
-					<input type="text" name="pxp_if_adobe" id="pxp_if_adobe" value="<?php echo ""; ?>" class="regular-text" />
 				</td>
 			</tr>
 			<tr>
@@ -266,12 +258,14 @@ class PXP_Clients
 						$credit_price 	= get_post_meta( $post_id, '_credit_price', true);
 						$credit_amount 	= get_post_meta( $post_id, '_credit_amount', true);
 						$credit_bonus	= get_post_meta( $post_id, '_credit_bonus', true);
+						$credit_icon	= get_the_post_thumbnail( $post_id, 'post-thumbnail' );						
 						
 						$total_credit	= $credit_amount + ( $credit_amount * ( $credit_bonus/100 ) );
 			?>
 						<div class="pxp-credit">
 							<div class="row">
-								<h3><?php _e( $total_credit . ' Credits' ); ?></h3>
+								<h3>[<?php _e( $total_credit . ' Credits' ); ?>]</h3>
+								<div class="credit-icon"><?php echo $credit_icon; ?></div>
 							</div>
 							<div id="content" class="row">
 								<p><?php _e( '$' . $credit_price ); ?></p>

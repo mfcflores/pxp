@@ -22,11 +22,11 @@ class PXP_Promo_Codes
 	{
 		// Add Actions
 		add_action( 'save_post', array( $this, 'pxp_promo_codes_save_post' ), 10, 2 );
-		add_action('manage_pxp_promo_codes_posts_custom_column', array($this, 'pxp_promo_codes_posts_custom_column'), 10, 2);
+		add_action( 'manage_pxp_promo_codes_posts_custom_column', array( $this, 'pxp_promo_codes_posts_custom_column'), 10, 2 );
 		
 		// Add Filters
-		add_filter('manage_edit-pxp_promo_codes_columns', array($this, 'pxp_set_custom_edit_pxp_promo_codes_columns'));
-		add_filter('manage_edit-pxp_promo_codes_sortable_columns', array($this, 'pxp_edit_promo_codes_sortable_columns'));
+		add_filter( 'manage_edit-pxp_promo_codes_columns', array( $this, 'pxp_set_custom_edit_pxp_promo_codes_columns' ) );
+		add_filter( 'manage_edit-pxp_promo_codes_sortable_columns', array( $this, 'pxp_edit_promo_codes_sortable_columns' ) );
 	}
 	
 	/**
@@ -102,8 +102,7 @@ class PXP_Promo_Codes
 				
 				break;
 			case 'promo_code':
-				//$promo_code = get_post_meta( $post_id, '_promo_code', true );
-				$promo_code = get_the_title();
+				$promo_code = get_post_meta( $post_id, '_promo_code', true );
 				
 				printf( __( '%s', '%s' ), $promo_code );
 				break;
@@ -123,9 +122,10 @@ class PXP_Promo_Codes
 				printf( __( '%s', '%s' ), $product_id );
 				break;
 			case 'promo_usage':
-				$promo_usage = get_post_meta( $post_id, '_promo_usage_coupon', true );
+				$promo_usage_coupon	= get_post_meta( $post_id, '_promo_usage_coupon', true);
+				$promo_usage_user	= get_post_meta( $post_id, '_promo_usage_user', true);
 				
-				printf( __( '%s', '%s' ), $promo_usage );
+				printf( __( '%s / %s', '%s' ), $promo_usage_coupon, $promo_usage_user );
 				break;
 			case 'promo_expiration':
 				$promo_expiration = get_post_meta( $post_id, '_promo_expiration', true );
@@ -175,10 +175,10 @@ class PXP_Promo_Codes
 		$promo_excluded_products	= ( $promo_excluded_products != NULL ) ? explode(",", $promo_excluded_products ): NULL;
 		
 		$promo_allowed_categories	= get_post_meta( $post_id, '_promo_allowed_categories', true);
-		$promo_allowed_categories	= ( $promo_allowed_categories != NULL ) ? explode(",", $promo_allowed_categories ): NULL;
+		$promo_allowed_categories	= ( $promo_allowed_categories != NULL ) ? explode(",", $promo_allowed_categories ): array();
 		
 		$promo_excluded_categories	= get_post_meta( $post_id, '_promo_excluded_categories', true);
-		$promo_excluded_categories	= ( $promo_excluded_categories != NULL ) ? explode(",", $promo_excluded_categories ): NULL;
+		$promo_excluded_categories	= ( $promo_excluded_categories != NULL ) ? explode(",", $promo_excluded_categories ): array();
 		
 		$promo_usage_coupon	= get_post_meta( $post_id, '_promo_usage_coupon', true);
 		$promo_usage_user	= get_post_meta( $post_id, '_promo_usage_user', true);
@@ -239,7 +239,7 @@ class PXP_Promo_Codes
 									}
 								endif;
 								?>
-									<li class="search-box"><input type="text" data-name="promo_allowed_products" id="pxp_allowed_products" value="" class="regular-text autocomplete" /></li>
+									<li class="search-box"><input type="text" data-name="promo_allowed_products" id="pxp_allowed_products" value="" class="full-width autocomplete" /></li>
 									<div class="clear"></div>
 								</ul>
 							</td>
@@ -260,7 +260,7 @@ class PXP_Promo_Codes
 									}
 								endif;
 								?>
-									<li class="search-box"><input type="text" data-name="promo_excluded_products" id="pxp_promo_excluded_products" value="" class="regular-text autocomplete" /></li>
+									<li class="search-box"><input type="text" data-name="promo_excluded_products" id="pxp_promo_excluded_products" value="" class="full-width autocomplete" /></li>
 									<div class="clear"></div>
 								</ul>
 							</td>
@@ -361,7 +361,7 @@ class PXP_Promo_Codes
 			return $post_id;
 		}
 
-		$promo_code			= get_the_title();
+		$promo_code			= get_the_title( $post_id );
 		$promo_amount		= $_POST['promo_amount'];
 		$promo_description	= $_POST['promo_description'];
 		

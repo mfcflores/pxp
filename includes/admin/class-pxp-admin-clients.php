@@ -239,14 +239,14 @@ class PXP_Admin_Clients
 						<input type="text" name="pxp_other_desc" id="pxp_other_desc" class="regular-text" />
 					</td>
 				</tr>
-			<tr>
-				<th>
-					<label for="pxp_if_adobe"><?php _e( 'If Adobe - (Adobe Creative Suite Version)' ); ?></label>
-				</th>
-				<td>
-					<input type="text" name="pxp_if_adobe" id="pxp_if_adobe" value="<?php echo ""; ?>" class="regular-text" />
-				</td>
-			</tr>
+				<tr>
+					<th>
+						<label for="pxp_if_adobe"><?php _e( 'If Adobe - (Adobe Creative Suite Version)' ); ?></label>
+					</th>
+					<td>
+						<input type="text" name="pxp_if_adobe" id="pxp_if_adobe" value="<?php echo ""; ?>" class="regular-text" />
+					</td>
+				</tr>
 				<tr>
 					<th>
 						<label for="pxp_professional_association"><?php _e( 'Professional Association' ); ?></label>
@@ -326,6 +326,7 @@ class PXP_Admin_Clients
 			'pxp_adobe'						=> ( isset( $_POST['pxp_adobe'] ) ) ? 1 : 0,
 			'pxp_other'						=> ( isset( $_POST['pxp_other'] ) ) ? 1 : 0,
 			'pxp_other_desc'				=> sanitize_text_field( $_POST['pxp_other_desc'] ),
+			'pxp_if_adobe'					=> sanitize_text_field( $_POST['pxp_if_adobe'] ),
 			'pxp_professional_association'	=> esc_textarea( $_POST['pxp_professional_association'] ),
 			'pxp_marketing_design'			=> sanitize_text_field( $_POST['pxp_marketing_design'] ),
 			'pxp_user_credits'				=> 0

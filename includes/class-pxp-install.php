@@ -113,42 +113,47 @@ class PXP_Install
 	public function create_pxp_pages()
 	{
 		$pages = array(
-			array(
+			'registration'	=> array(
 				'name'		=> 'registration',
 				'title'		=> 'Registration',
-				'content'	=> ''
+				'content'	=> '[pxp_registration]'
 			),
-			array(
+			'cart'			=> array(
 				'name'		=> 'cart',
 				'title'		=> 'Cart',
-				'content'	=> ''
+				'content'	=> '[pxp_cart]'
 			),
-			array(
+			'order'			=> array(
 				'name'		=> 'order',
 				'title'		=> 'Order',
-				'content'	=> ''
+				'content'	=> '[pxp_order]'
 			),
-			array(
+			'login'			=>array(
 				'name'		=> 'login', 
 				'title'		=> 'Login',
-				'content'	=> ''
+				'content'	=> '[pxp_login]'
 			),
-			array(
+			'search'		=> array(
 				'name'		=> 'search',
 				'title'		=> 'Search',
-				'content'	=> ''
+				'content'	=> '[pxp_search]'
 			),
-			array(
+			'product'		=> array(
 				'name'		=> 'product',
 				'title'		=> 'Product',
-				'content'	=> ''
+				'content'	=> '[pxp_product]'
 			),
-			array(
+			'selected-product'	=> array(
 				'name'		=> 'selected-product',
 				'title'		=> 'Selected Product',
-				'content'	=> ''
+				'content'	=> '[pxp_selected_product]'
 			)
 		);
+		
+		foreach( $pages as $key => $page )
+		{
+			pxp_create_page( 'pxp_' . $key . '_page', $page['name'], $page['title'], $page['content'] );
+		}
 	}
 		
 	/**
@@ -156,9 +161,9 @@ class PXP_Install
 	 */
 	public function remove_roles_on_plugin_deactivation()
 	{
-		remove_role('pxp_client');
-		remove_role('pxp_project_manager');
-		remove_role('pxp_product_author');
+		//remove_role('pxp_client');
+		//remove_role('pxp_project_manager');
+		//remove_role('pxp_product_author');
 	}
 	
 	/**

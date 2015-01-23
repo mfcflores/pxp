@@ -76,6 +76,9 @@ final class PixelPartners
 	 */
 	public function pxp_admin_includes()
 	{
+		// Plugin Library
+		include_once( 'lib/class-pxp-library.php' );
+		
 		// Admin Assets
 		include_once( 'includes/admin/class-pxp-admin-assets.php' );
 	
@@ -99,6 +102,9 @@ final class PixelPartners
 		
 		// Include plugin helper functions
 		include_once( 'lib/pxp_helpers.php' );
+		
+		// Add Plugin shortcodes
+		include_once( 'includes/class-pxp-shortcodes.php' );
 	}
 	
 	/**
@@ -106,6 +112,27 @@ final class PixelPartners
 	 */
 	public function pxp_frontend_includes()
 	{
+		global $pxp_products;
+		
+		// Plugin Library
+		include_once( 'lib/class-pxp-library.php' );
+		
+		// Front-end Assets
+		include_once( 'includes/class-pxp-frontend-assets.php' );
+		
+		// Include plugin helper functions
+		include_once( 'lib/pxp_helpers.php' );
+		
+		// Custom Page Templates
+		include_once( 'includes/templates/class-pxp-templates.php' );
+		
+		// Add Plugin shortcodes
+		include_once( 'includes/class-pxp-shortcodes.php' );
+		
+		// Add Plugin shortcodes
+		include_once( 'includes/class-pxp-products-external.php' );
+		
+		$pxp_products = new PXP_Products_External();
 	}
 	
 	/**
@@ -121,11 +148,16 @@ final class PixelPartners
 	 */
 	public function pxp_filters()
 	{
+		global $pxp;
+		
+		add_filter( 'pxp_notification_filter', array( $pxp, 'pxp_notification_filter' ) );
 	}
 	
 	public function pxp_wp_head()
 	{
 	}
+	
+	
 }
 
 }

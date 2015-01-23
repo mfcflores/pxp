@@ -35,11 +35,14 @@ class PXP_Cpt
 		// Add meta boxes in custom post types.
 		add_action( 'add_meta_boxes', array( $this, 'pxp_add_meta_boxes' ) );
 		
+		// Add content / form after title.
+		add_action( 'edit_form_after_title', array( $this, 'pxp_edit_form_after_title' ) );
+		
 		// Filter title field placeholder.
 		add_filter( 'enter_title_here', array( $this, 'pxp_change_default_title' ) ); 
 		
-		// Add content / form after title.
-		add_action( 'edit_form_after_title', array( $this, 'pxp_edit_form_after_title' ) );
+		// Filter Post Updated Messages.
+		add_filter( 'post_updated_messages', array( $this, 'exca_set_update_message' ) );
 		
 		// CPT: Orders
 		include_once( 'class-pxp-orders.php' );
@@ -175,7 +178,11 @@ class PXP_Cpt
 			
 			if( $key != "credit_block" )
 			{
-				$args['show_in_menu'] = 'edit.php?post_type=pxp_credit_blocks';
+				$args['show_in_menu'] 	= 'edit.php?post_type=pxp_credit_blocks';
+			}
+			else 
+			{
+				$args['supports'] = array( 'thumbnail' );
 			}
 			
 			if( $key == "promo_code" )
@@ -388,6 +395,49 @@ class PXP_Cpt
 			<textarea id="pxp_promo_description" name="promo_description" rows="10" class="full-width" placeholder="Description"><?php _e ( $promo_description ); ?></textarea>
 <?php
 		}
+	}
+	
+	/**
+	 * CPT update messages.
+	 *
+	 * See /wp-admin/edit-form-advanced.php
+	 *
+	 * @param array $messages Existing post update messages.
+	 * @return array Amended post update messages with new CPT update messages.
+	 */
+	public function exca_set_update_message($messages)
+	{
+		global $post, $post_ID;
+		
+		$post_type = get_post_type( $post_ID );
+
+		$permalink = get_permalink($post_ID);
+		
+		$obj = get_post_type_object($post_type);
+		$singular = $obj->labels->singular_name;
+		
+		$messages[$post_type] = array(
+			0 => '', // Unused. Messages start at index 1.
+			1 => __($singular.' updated. <a href="' . $permalink . '">View report</a>'),
+			2 => __('Custom field updated.'),
+			3 => __('Custom field deleted.'),
+			4 => __($singular.' updated. <a href="' . $permalink . '">View report</a>'),
+			5 => isset($_GET['revision']) ? sprintf( __($singular.' restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			6 => __($singular.' published. <a href="' . $permalink . '">View report</a>'),
+			7 => __('Page saved.'),
+			8 => __($singular.' submitted.'),
+			9 => sprintf( __($singular.' scheduled for: <strong>%1$s</strong>.'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ) ),
+			10 => __($singular.' draft updated.'),
+		);
+		
+		switch( $post_type )
+		{
+			case 'pxp_credit_blocks':
+				$messages[$post_type][1] = __($singular.' updated.');
+				break;
+		}
+		
+		return $messages;
 	}
 }
 
