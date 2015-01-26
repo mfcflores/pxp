@@ -47,23 +47,20 @@ class PXP_Templates
 	} 
 	
 	public function __construct()
-	{
-		//Template fallback
-		//add_action( 'template_redirect', array( $this, 'pxp_theme_redirect' ) );
-		
+	{	
 		$this->templates = array();
 
 		// Add a filter to the attributes metabox to inject template into the cache.
-		add_filter(	'page_attributes_dropdown_pages_args', array( $this, 'register_project_templates' ) );
+		add_filter(	'page_attributes_dropdown_pages_args', array( $this, 'register_pxp_templates' ) );
 
 
 		// Add a filter to the save post to inject out template into the page cache
-		add_filter(	'wp_insert_post_data', array( $this, 'register_project_templates' ) );
+		add_filter(	'wp_insert_post_data', array( $this, 'register_pxp_templates' ) );
 
 
 		// Add a filter to the template include to determine if the page has our 
 		// template assigned and return it's path
-		add_filter(	'template_include', array( $this, 'view_project_template' ) );
+		add_filter(	'template_include', array( $this, 'view_pxp_template' ) );
 
 
 		// Add your templates to this array.
@@ -77,7 +74,7 @@ class PXP_Templates
 	 * into thinking the template file exists where it doens't really exist.
 	 *
 	 */
-	public function register_project_templates( $atts ) 
+	public function register_pxp_templates( $atts ) 
 	{
 
 		// Create the key used for the themes cache
@@ -108,10 +105,15 @@ class PXP_Templates
 	/**
 	 * Checks if the template is assigned to the page
 	 */
-	public function view_project_template( $template ) 
+	public function view_pxp_template( $template ) 
 	{
 		global $post;
 
+		if( !$post )
+		{
+			return $template;
+		}
+		
 		if( !isset( $this->templates[ get_post_meta( $post->ID, '_wp_page_template', true ) ] ) ) 
 		{
 				return $template;	

@@ -13,20 +13,21 @@ if( !defined( 'ABSPATH' ) )
 	exit; // Exit if accessed directly
 }
 
-if( !class_exists( 'PXP_Admin_Assets' ) )
+if( !class_exists( 'PXP_Frontend_Assets' ) )
 {
 
-class PXP_Admin_Assets
+class PXP_Frontend_Assets
 {
 	public function __construct()
 	{
-		add_action( 'admin_enqueue_scripts', array( $this, 'pxp_admin_scripts' ) );
+		add_action( 'wp_head', array( $this, 'pxp_frontend_add_ajaxurl') );
+		add_action( 'wp_enqueue_scripts', array( $this, 'pxp_frontend_scripts' ) );
 	}
 	
 	/**
 	 * Enqueue & Register scritps and styles.
 	 */
-	public function pxp_admin_scripts( $hook )
+	public function pxp_frontend_scripts( $hook )
 	{
 		global $post;
 		
@@ -41,25 +42,25 @@ class PXP_Admin_Assets
 		wp_register_style	( 'jquery-ui-style', PXP_URL . '/assets/css/jquery-ui.css');
 		wp_enqueue_style	( 'jquery-ui-style' );
 		
-		if( isset( $post ) && $post->post_type == "pxp_products" )
-		{
-			//$this->pxp_initiate_bootstrap( $hook );
-			
-			wp_enqueue_media();
-		}
-		
-		wp_enqueue_script	( 'password-strength-meter' );
-		
 		wp_register_style	( 'pxp-fontawesome', PXP_URL . '/assets/css/font-awesome.min.css' );
 		wp_enqueue_style	( 'pxp-fontawesome' );
 		
-		wp_register_style	( 'pxp-style', PXP_URL . '/assets/css/admin.css' );
+		wp_register_style	( 'pxp-style', PXP_URL . '/assets/css/style.css' );
 		wp_enqueue_style	( 'pxp-style' );
 		
-		wp_register_script	( 'pxp-script', PXP_URL . '/assets/js/admin.js' );
+		wp_register_script	( 'pxp-script', PXP_URL . '/assets/js/script.js' );
 		wp_enqueue_script	( 'pxp-script' );
 		
 		
+	}
+	
+	public function pxp_frontend_add_ajaxurl()
+	{ 
+?>
+    <script type="text/javascript">
+        ajaxurl = '<?php echo admin_url( 'admin-ajax.php'); ?>';
+	</script>
+<?php 
 	}
 	
 	/**
@@ -80,6 +81,6 @@ class PXP_Admin_Assets
 
 }
 
-new PXP_Admin_Assets();
+new PXP_Frontend_Assets();
 
 ?>

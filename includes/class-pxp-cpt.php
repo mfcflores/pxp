@@ -117,6 +117,7 @@ class PXP_Cpt
 				$args['public']				= true;
 				$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
 				$args['map_meta_cap']		= true;
+				$args['rewrite']		= array( 'slug' => $key );
 			}
 
 			$post_type = 'pxp_' . $key . 's';
