@@ -44,4 +44,19 @@ jQuery(document).ready(function($) {
 			}
 		});
 	});
+	
+	$('.fancybox').fancybox({
+		closeBtn  : true,
+		arrows    : true,
+		nextClick : true,
+		helpers : {
+			title : {
+				type : 'outside'
+			},
+			thumbs : {
+				width  : 50,
+				height : 50
+			}
+		}
+	});
 });

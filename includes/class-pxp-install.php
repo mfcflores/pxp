@@ -137,16 +137,6 @@ class PXP_Install
 				'name'		=> 'search',
 				'title'		=> 'Search',
 				'content'	=> '[pxp_search]'
-			),
-			'product'		=> array(
-				'name'		=> 'product',
-				'title'		=> 'Product',
-				'content'	=> '[pxp_product]'
-			),
-			'selected-product'	=> array(
-				'name'		=> 'selected-product',
-				'title'		=> 'Selected Product',
-				'content'	=> '[pxp_selected_product]'
 			)
 		);
 		

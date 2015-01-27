@@ -42,7 +42,7 @@ class PXP_Cpt
 		add_filter( 'enter_title_here', array( $this, 'pxp_change_default_title' ) ); 
 		
 		// Filter Post Updated Messages.
-		add_filter( 'post_updated_messages', array( $this, 'exca_set_update_message' ) );
+		add_filter( 'post_updated_messages', array( $this, 'pxp_set_update_message' ) );
 		
 		// CPT: Orders
 		include_once( 'class-pxp-orders.php' );
@@ -91,7 +91,7 @@ class PXP_Cpt
 
 			$args = array(
 				'labels'             => $labels,
-				'public'             => false,
+				'public'             => true,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'show_in_menu'       => true,
@@ -112,12 +112,13 @@ class PXP_Cpt
 				$args['map_meta_cap']		= true;
 			}
 			
+			
 			if( $key == "product" )
 			{
 				$args['public']				= true;
 				$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
 				$args['map_meta_cap']		= true;
-				$args['rewrite']		= array( 'slug' => $key );
+				$args['rewrite']			= array( 'slug' => 'pxp_' . $key );
 			}
 
 			$post_type = 'pxp_' . $key . 's';
@@ -406,7 +407,7 @@ class PXP_Cpt
 	 * @param array $messages Existing post update messages.
 	 * @return array Amended post update messages with new CPT update messages.
 	 */
-	public function exca_set_update_message($messages)
+	public function pxp_set_update_message($messages)
 	{
 		global $post, $post_ID;
 		
@@ -419,12 +420,12 @@ class PXP_Cpt
 		
 		$messages[$post_type] = array(
 			0 => '', // Unused. Messages start at index 1.
-			1 => __($singular.' updated. <a href="' . $permalink . '">View report</a>'),
+			1 => __($singular.' updated. <a href="' . $permalink . '">View ' . $singular . '</a>'),
 			2 => __('Custom field updated.'),
 			3 => __('Custom field deleted.'),
-			4 => __($singular.' updated. <a href="' . $permalink . '">View report</a>'),
+			4 => __($singular.' updated. <a href="' . $permalink . '">View ' . $singular . '</a>'),
 			5 => isset($_GET['revision']) ? sprintf( __($singular.' restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6 => __($singular.' published. <a href="' . $permalink . '">View report</a>'),
+			6 => __($singular.' published. <a href="' . $permalink . '">View ' . $singular . '</a>'),
 			7 => __('Page saved.'),
 			8 => __($singular.' submitted.'),
 			9 => sprintf( __($singular.' scheduled for: <strong>%1$s</strong>.'), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ) ),

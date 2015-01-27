@@ -49,7 +49,7 @@ class PXP_Shortcodes
 		return PXP_Shortcode_Cart::output( $atts );
 	}
 	
-	public static function order( $att, $contents = '' )
+	public static function order( $atts, $contents = '' )
 	{
 		return PXP_Shortcode_Order::output( $atts );
 	}

@@ -23,7 +23,6 @@ class PXP_Products_External
 	
 	public function __construct()
 	{
-		
 	}
 	
 	/**

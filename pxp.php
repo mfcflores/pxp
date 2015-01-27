@@ -36,6 +36,9 @@ final class PixelPartners
 		// Initiate define constants
 		$this->pxp_defines();
 	
+		// Initiate includes Admin & Front-end
+		$this->pxp_includes();
+	
 		if( is_admin() )
 		{
 			// Initiate included admin files
@@ -53,6 +56,8 @@ final class PixelPartners
 		
 		// Add Filters
 		$this->pxp_filters();
+		
+		
 	}
 	
 	/**
@@ -72,21 +77,36 @@ final class PixelPartners
 	}
 	
 	/**
-	 * Include necessary admin files.
+	 * Initiate general include files.
 	 */
-	public function pxp_admin_includes()
+	public function pxp_includes()
 	{
 		// Plugin Library
 		include_once( 'lib/class-pxp-library.php' );
 		
+		// Custom Post Type
+		include_once( 'includes/class-pxp-cpt.php' );
+		
+		// Include plugin helper functions
+		include_once( 'lib/pxp_helpers.php' );
+		
+		// Custom Page Templates
+		include_once( 'includes/templates/class-pxp-templates.php' );
+		
+		// Add Plugin shortcodes
+		include_once( 'includes/class-pxp-shortcodes.php' );
+	}
+	
+	/**
+	 * Include necessary admin files.
+	 */
+	public function pxp_admin_includes()
+	{	
 		// Admin Assets
 		include_once( 'includes/admin/class-pxp-admin-assets.php' );
 	
 		// Install Hook
 		include_once( 'includes/class-pxp-install.php' );
-		
-		// Custom Post Type
-		include_once( 'includes/class-pxp-cpt.php' );
 		
 		// Admin Menus
 		include_once( 'includes/class-pxp-admin-menus.php' );
@@ -99,12 +119,6 @@ final class PixelPartners
 		
 		// Client side page
 		include_once( 'includes/clients/class-pxp-clients.php' );
-		
-		// Include plugin helper functions
-		include_once( 'lib/pxp_helpers.php' );
-		
-		// Add Plugin shortcodes
-		include_once( 'includes/class-pxp-shortcodes.php' );
 	}
 	
 	/**
@@ -114,20 +128,8 @@ final class PixelPartners
 	{
 		global $pxp_products;
 		
-		// Plugin Library
-		include_once( 'lib/class-pxp-library.php' );
-		
 		// Front-end Assets
 		include_once( 'includes/class-pxp-frontend-assets.php' );
-		
-		// Include plugin helper functions
-		include_once( 'lib/pxp_helpers.php' );
-		
-		// Custom Page Templates
-		include_once( 'includes/templates/class-pxp-templates.php' );
-		
-		// Add Plugin shortcodes
-		include_once( 'includes/class-pxp-shortcodes.php' );
 		
 		// Add Plugin shortcodes
 		include_once( 'includes/class-pxp-products-external.php' );

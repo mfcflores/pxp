@@ -45,6 +45,9 @@ class PXP_Frontend_Assets
 		wp_register_style	( 'pxp-fontawesome', PXP_URL . '/assets/css/font-awesome.min.css' );
 		wp_enqueue_style	( 'pxp-fontawesome' );
 		
+		// Initiate Fancybox
+		$this->pxp_initiate_fancyapps();
+		
 		wp_register_style	( 'pxp-style', PXP_URL . '/assets/css/style.css' );
 		wp_enqueue_style	( 'pxp-style' );
 		
@@ -76,6 +79,38 @@ class PXP_Frontend_Assets
 		
 		wp_register_script	( 'pxp-bootstrap-js', PXP_URL . '/assets/js/bootstrap.min.js' );
 		wp_enqueue_script	( 'pxp-bootstrap-js' );
+	}
+	
+	/**
+	 * Initiate Fancyapps or Lightbox.
+	 */
+	public function pxp_initiate_fancyapps()
+	{
+		// Add mousewheel plugin (this is optional)
+		wp_register_script	( 'fancybox-mousewheel-js', PXP_URL . '/assets/lib/fancyapps/jquery.mousewheel-3.0.6.pack.js' );
+		wp_enqueue_script	( 'fancybox-mousewheel-js' );
+		
+		// Add fancyBox main JS and CSS files
+		wp_register_script	( 'fancybox-js', PXP_URL . '/assets/lib/fancyapps/jquery.fancybox.js?v=2.1.5' );
+		wp_enqueue_script	( 'fancybox-js' );
+		wp_register_style	( 'fancybox-css', PXP_URL . '/assets/lib/fancyapps/jquery.fancybox.css?v=2.1.5' );
+		wp_enqueue_style	( 'fancybox-css' );
+
+		// Add Button helper (this is optional)
+		wp_register_style	( 'fancybox-button-css', PXP_URL . '/assets/lib/fancyapps/helpers/jquery.fancybox-buttons.css?v=1.0.5' );
+		wp_enqueue_style	( 'fancybox-button-css' );
+		wp_register_script	( 'fancybox-button-js', PXP_URL . '/assets/lib/fancyapps/helpers/jquery.fancybox-buttons.js?v=1.0.5' );
+		wp_enqueue_script	( 'fancybox-button-js' );
+
+		// Add Thumbnail helper (this is optional)
+		wp_register_style	( 'fancybox-thumbs-css', PXP_URL . '/assets/lib/fancyapps/helpers/jquery.fancybox-thumbs.css?v=1.0.7' );
+		wp_enqueue_style	( 'fancybox-thumbs-css' );
+		wp_register_script	( 'fancybox-thumbs-js', PXP_URL . '/assets/lib/fancyapps/helpers/jquery.fancybox-thumbs.js?v=1.0.7' );
+		wp_enqueue_script	( 'fancybox-thumbs-js' );
+
+		// Add Media helper (this is optional)
+		wp_register_script	( 'fancybox-media-js', PXP_URL . '/assets/lib/fancyapps/helpers/jquery.fancybox-media.js?v=1.0.6' );
+		wp_enqueue_script	( 'fancybox-media-js' );
 	}
 }
 
