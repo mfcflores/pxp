@@ -128,7 +128,7 @@ class PXP_Templates
 		}
 		else 
 		{ 
-			echo $file; 
+			echo $file;
 		}
 
 		return $template;

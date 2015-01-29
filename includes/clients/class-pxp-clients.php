@@ -377,8 +377,93 @@ class PXP_Clients
 	{
 		$order_id = ( isset( $_GET['order'] ) ) ? $_GET['order'] : NULL;
 
-		echo $order_id;
-	}
+
+?>
+		<div class="pxp-credit-box">
+				<h2>
+					<?php _e( 'Order Number:  ' ); _e( $order_id );?>
+				</h2>
+		</div>
+		<div class="pxp-credit-box">
+				<h4>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. 
+				</h4>
+		</div>
+		<div class="pxp-order">
+			<div class="pxp-credit-box">
+				<div class="row">
+					<h3><?php _e( 'General Details: '); ?></h3>
+				</div>
+				<div class="row">
+					<table class="form-table pxp_orders">
+						<tbody>
+							<tr valign="top">
+								<th><?php _e( 'Order Date:' ); ?></th>
+								<td><?php _e( '12/25/2017' ); ?></td>
+							</tr>
+							<tr valign="top">
+								<th><?php _e( 'Order Status:' ); ?></th>
+								<td><?php _e( 'Ordered' ); ?></td>
+							</tr>
+							<tr valign="top">
+								<th><?php _e( 'Customer:' ); ?></th>
+								<td><?php _e( 'Cookie Monster' ); _e( ' (Sesame Inc.)' ); ?></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="row">
+					<h3><?php _e( 'Billing Details: '); ?></h3>
+				</div>
+				<div class="row">
+					<table class="form-table pxp_orders">
+						<tbody>
+							<tr valign="top">
+								<th><?php _e( 'PayPal Email:' ); ?></th>
+								<td><?php _e( 'cookiepaypal@mail.com' ); ?></td>
+							</tr>
+							<tr valign="top">
+								<th><?php _e( 'Phone:' ); ?></th>
+								<td><?php _e( '222-7788' ); ?></td>
+							</tr>
+							<tr valign="top">
+								<th><?php _e( 'PO No:' ); ?></th>
+								<td><?php _e( '247-88754' ); ?></td>
+							</tr>
+							<tr valign="top">
+								<th><?php _e( 'Address:' ); ?></th>
+								<td><?php _e( 'Sesame Street, Davao City' ); ?></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div><br>
+		<div class="pxp-order">
+			<div class="pxp-credit-box">
+				<div class="row">
+					<h3><?php _e( 'Order Items: '); ?></h3>
+				</div>
+				<div class="row">
+					<table class="form-table pxp_orders">
+						<tbody>
+							<th>Item</th>
+							<th>Job Reference</th>
+							<th>Price</th>
+						</tbody>
+						<tr>
+							<td>Photo Icon</td>
+							<td>Sample Job</td>
+							<td>$150</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+
+
+<?php
+		}
 	
 	/**
 	 * Display Client Transaction History Page.
