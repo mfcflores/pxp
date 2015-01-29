@@ -37,6 +37,8 @@
 	width: 100%;
 }
 
+
+
 .pxp-credit {
 	float: left;
 	width: 29%;
@@ -223,7 +225,8 @@
 	bottom: 0px;
 	background: #F5F5F5;
 	border-right: 1px solid #EEE;
-	width: 15%;
+	/*width: 15%;*/
+	width: 20%;
 }
 
 .pxp-tabs .ui-tabs-nav li{
@@ -267,7 +270,8 @@
 }
 
 .pxp-tabs .ui-tabs-panel {
-	width: 85%;
+	/*width: 85%;*/
+	width: 80%;
 	min-height: 15em;
 	padding: 0px 20px;
 }
@@ -381,3 +385,15 @@ ul.category-list li:hover {
 	background: #F0F0F0;
 }
 /* Auto Complete */
+
+/* Orders */
+.pxp-order {
+	float: left;
+	width: 100%;
+	border: 1px solid #777;
+	border-radius: 5px;
+	/*margin-right: 20px;
+	margin-left: 20px;*/
+	margin-top: 7px; 
+	background-color: #FFFFFF;
+}

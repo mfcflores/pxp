@@ -226,7 +226,7 @@ class PXP_Promo_Codes
 						<tr valign="top">
 							<th><?php _e( 'Allowed Products:' ); ?></th>
 							<td>
-								<ul class="promo_allowed_products search-list-container half-width">
+								<ul class="promo_allowed_products search-list-container full-width">
 								<?php
 								if( !empty( $promo_allowed_products ) ) :
 									foreach( $promo_allowed_products as $post_id )
@@ -247,7 +247,7 @@ class PXP_Promo_Codes
 						<tr valign="top">
 							<th><?php _e( 'Excluded Products:' ); ?></th>
 							<td>
-								<ul class="promo_excluded_products search-list-container half-width">
+								<ul class="promo_excluded_products search-list-container full-width">
 								<?php
 								if( !empty( $promo_excluded_products ) ) :
 									foreach( $promo_excluded_products as $post_id )
