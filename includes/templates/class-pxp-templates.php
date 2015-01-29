@@ -107,18 +107,34 @@ class PXP_Templates
 	 */
 	public function view_pxp_template( $template ) 
 	{
-		global $post;
-
+		global $post, $pxp_products;
+		
 		if( !$post )
 		{
 			return $template;
+		}
+		
+		// Return archive template for 'pxp_products'
+		if( is_post_type_archive( 'pxp_products' ) )
+		{
+			$file = plugin_dir_path(__FILE__). '/products/archive-pxp-products.php';
+			
+			return $file;
+		}
+		
+		// Return single template for 'pxp_products'
+		if( is_singular( 'pxp_products' ) )
+		{
+			$file = plugin_dir_path(__FILE__). '/products/single-pxp-product.php';
+			
+			return $file;
 		}
 		
 		if( !isset( $this->templates[ get_post_meta( $post->ID, '_wp_page_template', true ) ] ) ) 
 		{
 				return $template;	
 		} 
-
+		
 		$file = plugin_dir_path(__FILE__). get_post_meta( $post->ID, '_wp_page_template', true );
 		
 		// Just to be safe, we check if the file exist first
@@ -130,7 +146,7 @@ class PXP_Templates
 		{ 
 			echo $file;
 		}
-
+		
 		return $template;
 	}
 }
