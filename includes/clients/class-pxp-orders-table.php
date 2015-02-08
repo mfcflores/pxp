@@ -141,7 +141,7 @@ class Client_Order_List_Table extends WP_List_Table {
 	function column_order_date($item){		
         //Build row actions
         $actions = array(
-            'view'      => sprintf('<a href="%s">View</a>', admin_url() . "admin.php?page=pxp-client-orders&order=" . $item['ID']),
+            'view'      => sprintf('<a href="%s">View</a>', admin_url() . "admin.php?page=pxp-client-orders&order={$item['ID']}&post={$item['post_id']}"),
         );
         
         //Return the title contents

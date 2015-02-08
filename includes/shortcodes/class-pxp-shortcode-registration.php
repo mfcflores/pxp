@@ -31,7 +31,7 @@ class PXP_Shortcode_Registration
 			$message = self::send_registration();
 		endif;
 		
-		pxp_get_template( 'class-pxp-template-registration.php' );
+		pxp_get_template( 'pxp-template-registration.php' );
 	}
 	
 	public static function send_registration()

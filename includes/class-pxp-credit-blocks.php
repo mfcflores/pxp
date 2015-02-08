@@ -144,8 +144,8 @@ class PXP_Credit_Blocks
 					<td><input type="text" name="credit_amount" id="pxp_credit_amount" value="<?php echo $credit_amount; ?>" class="regular-text" /></td>
 				</tr>
 				<tr valign="top">
-					<th><?php _e( 'Bonus:' ); ?></th>
-					<td><input type="text" name="credit_bonus" id="pxp_credit_bonus" value="<?php echo $credit_bonus; ?>" class="regular-text" /></td>
+					<th><?php _e( 'Bonus <i class="tooltip fa fa-question-circle" title="Please input the bonus credit without the percent (%) sign. Adding the percent sign adds another percent in the Credit Blocks list and the Purchase Credits page (eg. 11%%)."></i> :' ); ?></th>
+					<td><input type="text" name="credit_bonus" id="pxp_credit_bonus" value="<?php echo $credit_bonus; ?>" class="regular-text number" /></td>
 				</tr>
 			</tbody>
 		</table>

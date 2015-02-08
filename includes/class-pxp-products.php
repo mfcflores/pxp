@@ -38,7 +38,6 @@ class PXP_Products
 	{
 		$columns = array(
 			'cb' 			=> '<input type="checkbox" />',
-			'product_id' 	=> __( 'ID' ),
 			'product_image' => __( 'Image' ),
 			'product_name' 	=> __( 'Product Name' ),
 			'product_code' 	=> __( 'Product Code' ),
@@ -62,6 +61,21 @@ class PXP_Products
 		{
 			case 'product_id':
 				$product_id = get_post_meta( $post_id, '_product_id', true );
+
+				printf( __( '%s', '%s' ), $product_id );
+				break;
+			case 'product_image':
+				if ( has_post_thumbnail() ) { // check if the post has a Post Thumbnail assigned to it.
+					$edit = get_edit_post_link( $post_id );
+				
+					printf( __( '<a href="%s">' ), $edit );
+					the_post_thumbnail();
+					printf( __( '</a>' ), $edit );
+				} 
+				break;
+			case 'product_name':
+				$product_name = get_the_title();
+				$product_id = get_post_meta( $post_id, '_product_id', true );
 				
 				$edit 		= get_edit_post_link( $post_id );
 				$trash 		= get_delete_post_link( $post_id );
@@ -84,8 +98,9 @@ class PXP_Products
 				else
 				{
 					$row_action = '<div class="row-actions">
+						<span class="text-muted">ID: ' . $product_id . ' </span>
 						<span class="edit">
-							<a title="Edit this item" href="' . $edit . '">Edit</a> | 
+							| <a title="Edit this item" href="' . $edit . '">Edit</a> | 
 						</span>
 						<span class="trash">
 							<a class="submitdelete" href="' . $trash . '" title="Move this item to the Trash">Trash</a> | 
@@ -96,19 +111,8 @@ class PXP_Products
 					</div>';
 				}
 				
-				printf( __( '<a href="%s"><strong>%s</strong></a> %s', '%s' ), $edit, $product_id, $row_action );
+				printf( __( '<a href="%s"><strong>%s</strong></a> %s', '%s' ), $edit, $product_name, $row_action );
 				
-				
-				break;
-			case 'product_image':
-				if ( has_post_thumbnail() ) { // check if the post has a Post Thumbnail assigned to it.
-					the_post_thumbnail();
-				} 
-				break;
-			case 'product_name':
-				$product_name = get_the_title();
-				
-				printf( __( '%s', '%s' ), $product_name );
 				break;
 			case 'product_code':
 				$product_code = get_post_meta( $post_id, '_product_code', true );
@@ -212,7 +216,7 @@ class PXP_Products
 					<label for="pxp_product_code"><?php _e( 'Product Code' ); ?></label>
 				</th>
 				<td>
-					<input type="text" name="product_code" id="pxp_product_code" value="<?php echo $product_code; ?>" class="regular-text" />
+					<input type="text" name="product_code" id="pxp_product_code" value="<?php echo $product_code; ?>" class="regular-text" required />
 				</td>
 			</tr>
 			<tr>
@@ -220,7 +224,7 @@ class PXP_Products
 					<label for="pxp_product_price"><?php _e( 'Price' ); ?></label>
 				</th>
 				<td>
-					<input type="text" name="product_price" id="pxp_product_price" value="<?php echo $product_price; ?>" class="regular-text" />
+					<input type="text" name="product_price" id="pxp_product_price" value="<?php echo $product_price; ?>" class="regular-text number" required/>
 				</td>
 			</tr>
 			<tr>
@@ -355,6 +359,22 @@ class PXP_Products
 		{
 			update_post_meta( $post_id, '_' . $key, $value );
 		}
+		
+		// Update post status as pending or publish.
+		if ( ! wp_is_post_revision( $post_id ) && $product_price == NULL )
+		{
+			remove_action( 'save_post', array( $this, 'pxp_product_save_post' ) );
+			
+			$args = array(
+				'ID'			=> $post_id,
+				'post_status'	=> 'pending'
+			);
+			
+			wp_update_post( $args );
+			
+			add_action( 'save_post', array( $this, 'pxp_product_save_post' ) );
+		}
+		
 	}
 }
 

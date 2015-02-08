@@ -19,7 +19,7 @@ if( !class_exists( 'PXP_Credit_Adjustments' ) )
 class PXP_Credit_Adjustments
 {
 	public function __construct()
-	{
+	{	
 		// Add Actions
 		add_action( 'save_post', array( $this, 'pxp_credit_adjustment_save_post' ), 10, 2 );
 		add_action( 'manage_pxp_adjustments_posts_custom_column', array( $this, 'pxp_credit_adjustments_posts_custom_column' ), 10, 2);
@@ -42,7 +42,9 @@ class PXP_Credit_Adjustments
 			'job_reference'	=> __( 'Job Reference' ),
 			'contact_name'	=> __( 'Contact Name' ),
 			'amount'		=> __( 'Amount' ),
-			'notes'			=> __( 'Notes' ),
+			'adjustment'	=> __( 'Adjustment' ),
+			'author' 		=> __( 'Author' ),
+			'status' 		=> __( 'Status' ),
 			'date' 			=> __( 'Date' ),
 		);
 		
@@ -126,10 +128,19 @@ class PXP_Credit_Adjustments
 				
 				printf( __( '%s', '%s' ), $amount );
 				break;
-			case 'notes':
-				$notes = get_post_meta( $post_id, '_notes', true );
+			case 'adjustment':
+				$adjustment = get_post_meta( $post_id, '_adjustment', true );
 				
-				printf( __( '%s', '%s' ), $notes );
+				printf( __( '%s', '%s' ), $adjustment );
+				break;
+			case 'status':
+				global $post;
+
+				$status = $post->post_status;
+				
+				$status = ( $status == "publish" ) ? "Approved" : ucfirst( $status );
+				
+				printf( __( '%s' ), $status );
 				break;
 		}
 	}
@@ -146,7 +157,8 @@ class PXP_Credit_Adjustments
 		$columns['job_reference'] 	= 'job_reference';
 		$columns['contact_name'] 	= 'contact_name';
 		$columns['amount'] 			= 'amount';
-		$columns['notes'] 			= 'notes';
+		$columns['adjustment'] 			= 'adjustment';
+		$columns['status'] 			= 'status';
 		
 		return $columns;
 	}
@@ -156,18 +168,20 @@ class PXP_Credit_Adjustments
 	public static function pxp_credit_adjustments_general_box()
 	{
 		global $post_id;
-  
+		
 		//Add an nonce field so we can check it later.
 		wp_nonce_field('pxp_adjustments', 'pxp_adjustments_nonce');
 		
 		$clients = PXP_Admin_Clients::pxp_admin_get_clients();
 		
-		$order_number	= get_post_meta( $post_id, '_order_number', true);
-		$job_reference 	= get_post_meta( $post_id, '_job_reference', true);
-		$contact_name	= get_post_meta( $post_id, '_contact_name', true);
-		$amount			= get_post_meta( $post_id, '_amount', true);
-		$notes			= get_post_meta( $post_id, '_notes', true);
-		$adjustment		= get_post_meta( $post_id, '_adjustment', true);
+		$order_number	= get_post_meta( $post_id, '_order_number', true );
+		$job_reference 	= get_post_meta( $post_id, '_job_reference', true );
+		$contact_name	= get_post_meta( $post_id, '_contact_name', true );
+		$amount			= get_post_meta( $post_id, '_amount', true );
+		$notes			= get_post_meta( $post_id, '_notes', true );
+		$adjustment		= get_post_meta( $post_id, '_adjustment', true );
+		
+		$approved 		= get_post_meta( $post_id, '_approved', true );
 ?>
 		<table class="form-table pxp_adjustments">
 			<tbody>
@@ -211,6 +225,14 @@ class PXP_Credit_Adjustments
 						<label for="adjustment_refund"><input type="radio" name="adjustment" id="adjustment_refund" value="Refund" <?php echo ( $adjustment == "Refund" ) ? "checked" : ""; ?>  /> <?php _e( 'Refund' ); ?></label>
 					</td>
 				</tr>
+			<?php if( current_user_can( 'manage_options' ) ): ?>
+				<tr valign="top">
+					<th><label for="adjustment_approve"><?php _e( 'Approve:' ); ?></label></th>
+					<td>
+						<input type="checkbox" name="approve" id="adjustment_approve" value="1" <?php echo ( $approved == 1 ) ? "checked disabled" : ""; ?> />
+					</td>
+				</tr>
+			<?php endif; ?>
 			</tbody>
 		</table>
 <?php
@@ -243,26 +265,99 @@ class PXP_Credit_Adjustments
 			return $post_id;
 		}
 
-		$order_number	= $_POST['order_number'];
+		$approved 		= get_post_meta( $post_id, '_approved', true );
+		
+		$order_id		= $_POST['order_number'];
 		$job_reference 	= $_POST['job_reference'];
-		$contact_name	= $_POST['contact_name'];
+		$user_id		= $_POST['contact_name'];
 		$amount			= $_POST['amount'];
-		$notes	= $_POST['notes'];
-		$adjustment	= $_POST['adjustment'];
+		$notes			= $_POST['notes'];
+		$adjustment		= $_POST['adjustment'];
+		
 	
 		$data = array (
-			'order_number'	=> $order_number,
+			'order_number'	=> $order_id,
 			'job_reference'	=> $job_reference,
-			'contact_name'	=> $contact_name,
+			'contact_name'	=> $user_id,
 			'amount'		=> $amount,
 			'notes'			=> $notes,
 			'adjustment'	=> $adjustment,
 		);
 		
+		if( current_user_can( 'manage_options' ) && $approved != 1 ):
+			$data['approved'] = $_POST['approve'];
+			
+			if( isset( $_POST['approve'] ) && $_POST['approve'] == 1 ):
+				switch( $adjustment )
+				{
+					case 'Charge':
+						$this->pxp_credit_adjust_charge( $user_id, $order_id, $amount );
+						break;
+					case 'Refund':
+						$this->pxp_credit_adjust_refund( $user_id, $order_id, $amount );
+						break;
+				}	
+			endif;
+		endif;
+		
 		foreach( $data as $key => $value )
 		{
 			update_post_meta( $post_id, '_' .$key, $value );
 		}
+		
+		// Update post status as pending or publish.
+		if ( ! wp_is_post_revision( $post_id ) )
+		{
+			remove_action( 'save_post', array( $this, 'pxp_credit_adjustment_save_post' ) );
+			
+			$args = array(
+				'ID'			=> $post_id,
+				'post_status'	=> 'pending'
+			);
+			
+			if( current_user_can( 'manage_options' ) || $approved == 1 ):
+				$args['post_status'] = 'publish';
+			endif;
+			
+			wp_update_post( $args );
+			
+			add_action( 'save_post', array( $this, 'pxp_credit_adjustment_save_post' ) );
+		}
+	}
+	
+	/**
+	 * Charge client additional credit.
+	 *
+	 * @param int $user_id Client to be charge.
+	 * @param int $order_id Order ID to charge additional credits.
+	 * @param int $amount Amount of credits to charge client.
+	 */
+	public function pxp_credit_adjust_charge( $user_ID, $order_number, $amount )
+	{
+		$user_credits = get_user_meta( $user_ID, 'pxp_user_credits', true );
+		
+		if( $amount < $user_credits )
+		{
+			$update_credits = $user_credits - $amount;
+			update_user_meta( $user_ID, 'pxp_user_credits', $update_credits );
+		}
+	}
+	
+	/**
+	 * Refund client credits.
+	 *
+	 * @param int $user_id Client to be refunded.
+	 * @param int $order_id Order ID to refund credits.
+	 * @param int $amount Amount of credits refunded to client.
+	 */
+	public function pxp_credit_adjust_refund( $user_ID, $order_number, $amount )
+	{
+		$user_credits 	= get_user_meta( $user_ID, 'pxp_user_credits', true );
+		$update_credits = $user_credits + $amount;
+		
+		echo $user_credits;
+		
+		update_user_meta( $user_ID, 'pxp_user_credits', $update_credits );
 	}
 }
 

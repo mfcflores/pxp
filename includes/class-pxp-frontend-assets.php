@@ -36,6 +36,9 @@ class PXP_Frontend_Assets
 		wp_register_script	( 'jquery-ui', PXP_URL . '/assets/js/jquery-ui.js');
 		wp_enqueue_script	( 'jquery-ui' );
 		
+		wp_register_script	( 'jquery-validation', PXP_URL . '/assets/js/jquery.validate.min.js');
+		wp_enqueue_script	( 'jquery-validation' );
+		
 		wp_register_script	( 'jquery-autocomplete', PXP_URL . '/assets/js/jquery.autocomplete.js');
 		wp_enqueue_script	( 'jquery-autocomplete' );
 		
@@ -47,6 +50,9 @@ class PXP_Frontend_Assets
 		
 		// Initiate Fancybox
 		$this->pxp_initiate_fancyapps();
+		
+		// Owl Carousel
+		$this->owl_carousel();
 		
 		wp_register_style	( 'pxp-style', PXP_URL . '/assets/css/style.css' );
 		wp_enqueue_style	( 'pxp-style' );
@@ -111,6 +117,19 @@ class PXP_Frontend_Assets
 		// Add Media helper (this is optional)
 		wp_register_script	( 'fancybox-media-js', PXP_URL . '/assets/lib/fancyapps/helpers/jquery.fancybox-media.js?v=1.0.6' );
 		wp_enqueue_script	( 'fancybox-media-js' );
+	}
+	
+	/**
+	 * Initiate Owl Carousel.
+	 */
+	public function owl_carousel()
+	{
+		// Owl Carousel Assets
+		wp_register_style	( 'owl-carousel-css', PXP_URL . '/assets/lib/owl-carousel/owl.carousel.css' );
+		wp_enqueue_style	( 'owl-carousel-css' );
+		
+		wp_register_script	( 'owl-carousel-js', PXP_URL . '/assets/lib/owl-carousel/owl.carousel.min.js' );
+		wp_enqueue_script	( 'owl-carousel-js' );
 	}
 }
 

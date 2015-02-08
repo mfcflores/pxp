@@ -19,28 +19,26 @@ if( !class_exists( 'PXP_Cpt' ) )
 class PXP_Cpt
 {
 	public function __construct()
-	{
+	{		
 		add_action( 'init', array( $this, 'pxp_register_post_types' ), 5 );
-		add_action( 'init', array( $this, 'pxp_register_credit_post_types' ), 5 );
+		
 		add_action( 'init', array( $this, 'pxp_register_taxonomies' ), 5 );
 		
-		add_filter( 'wp_insert_post_data', array( $this, 'pxp_filter_insert_post_data' ), 99, 2 );
-		
+		// Remove add new button.
+		add_action( 'admin_head', array( $this, 'pxp_hide_add_new' ) );
 		// Hide Add Menu in custom post types.
 		add_action( 'admin_menu', array( $this, 'pxp_hide_add_menu' ) );
-		
 		// Hide meta boxes in custom post types.
-		add_Action( 'admin_menu', array( $this, 'pxp_remove_meta_boxes' ) );
-		
+		add_action( 'admin_menu', array( $this, 'pxp_remove_meta_boxes' ) );
 		// Add meta boxes in custom post types.
 		add_action( 'add_meta_boxes', array( $this, 'pxp_add_meta_boxes' ) );
-		
 		// Add content / form after title.
 		add_action( 'edit_form_after_title', array( $this, 'pxp_edit_form_after_title' ) );
 		
+		// Filter Post Title and Post Name.
+		add_filter( 'wp_insert_post_data', array( $this, 'pxp_filter_insert_post_data' ), 99, 2 );
 		// Filter title field placeholder.
 		add_filter( 'enter_title_here', array( $this, 'pxp_change_default_title' ) ); 
-		
 		// Filter Post Updated Messages.
 		add_filter( 'post_updated_messages', array( $this, 'pxp_set_update_message' ) );
 		
@@ -67,13 +65,14 @@ class PXP_Cpt
 	{
 		$pxp_cpt = array(
 			'product'		=> 'Product',
-			'order'			=> 'Order'
+			'order'			=> 'Order',
+			'transaction'	=> 'Transaction',
 		);
 		
 		foreach($pxp_cpt as $key => $value)
 		{
 			$labels = array(
-				'name'               => _x( $value .'s', 'post type general name', 'excavations' ),
+				'name'               => _x( $value .'s', 'post type general name' ),
 				'singular_name'      => _x( $value, 'post type singular name' ),
 				'menu_name'          => _x( $value . 's', 'admin menu' ),
 				'name_admin_bar'     => _x( $value, 'add new on admin bar' ),
@@ -91,7 +90,7 @@ class PXP_Cpt
 
 			$args = array(
 				'labels'             => $labels,
-				'public'             => true,
+				'public'             => false,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'show_in_menu'       => true,
@@ -104,27 +103,35 @@ class PXP_Cpt
 				'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
 			);
 			
-			if( $key == "order" )
+			switch( $key )
 			{
-				$args['supports'] = false;
-				$args['public']				= true;
-				$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
-				$args['map_meta_cap']		= true;
-			}
-			
-			
-			if( $key == "product" )
-			{
-				$args['public']				= true;
-				$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
-				$args['map_meta_cap']		= true;
-				$args['rewrite']			= array( 'slug' => 'pxp_' . $key );
+				case 'order':
+					$args['supports'] 			= false;
+					$args['public']				= true;
+					$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
+					$args['map_meta_cap']		= true;
+					$args['menu_icon']			= 'dashicons-feedback';
+					break;
+				case 'product':
+					$args['public']				= true;
+					$args['capability_type']	= array( 'pxp_' . $key, 'pxp_' . $key . 's' );
+					$args['map_meta_cap']		= true;
+					$args['rewrite']			= array( 'slug' => 'pxp_' . $key );
+					$args['menu_icon']			= 'dashicons-cart';
+					break;
+				case 'transaction':
+					$args['publicly_queryable'] = false;
+					$args['show_ui'] 			= false;
+					$args['has_archive'] 		= false;
+					break;			
 			}
 
 			$post_type = 'pxp_' . $key . 's';
 			
-			register_post_type($post_type, $args);
+			register_post_type( $post_type, $args );
 		}
+		
+		$this->pxp_register_credit_post_types();
 	}
 	
 	/**
@@ -135,13 +142,13 @@ class PXP_Cpt
 		$pxp_cpt = array(
 			'credit_block'	=> 'Credit Block',
 			'promo_code'	=> 'Promo Code',
-			'adjustment'	=> 'Credit Adjustment',
+			'adjustment'	=> 'Credit Adjustment'
 		);
 		
 		foreach($pxp_cpt as $key => $value)
 		{
 			$labels = array(
-				'name'               => _x( $value .'s', 'post type general name', 'excavations' ),
+				'name'               => _x( $value .'s', 'post type general name' ),
 				'singular_name'      => _x( $value, 'post type singular name' ),
 				'menu_name'          => _x( $value . 's', 'admin menu' ),
 				'name_admin_bar'     => _x( $value, 'add new on admin bar' ),
@@ -168,7 +175,9 @@ class PXP_Cpt
 				'publicly_queryable' 	=> true,
 				'show_ui'            	=> true,
 				'show_in_menu'       	=> true,
-				'query_var'          	=> true,
+				'show_in_nav_menu'      => false,
+				'show_in_admin_bar'     => true,
+				'query_var'          	=> false,
 				'rewrite'            	=> false,
 				'capability_type'    	=> array( 'pxp_' . $key, 'pxp_' . $key . 's' ),
 				'has_archive'        	=> true,
@@ -180,7 +189,7 @@ class PXP_Cpt
 			
 			if( $key != "credit_block" )
 			{
-				$args['show_in_menu'] 	= 'edit.php?post_type=pxp_credit_blocks';
+				$args['show_in_menu'] = 'edit.php?post_type=pxp_credit_blocks';
 			}
 			else 
 			{
@@ -191,10 +200,10 @@ class PXP_Cpt
 			{
 				$args['supports'] = array( 'title' );
 			}
-
+			
 			$post_type = 'pxp_' . $key . 's';
 			
-			register_post_type($post_type, $args);
+			register_post_type( $post_type, $args );
 		}
 	}
 	
@@ -228,7 +237,7 @@ class PXP_Cpt
 			'show_ui'               => true,
 			'show_admin_column'     => true,
 			'query_var'             => true,
-			'rewrite'               => array( 'slug' => 'product_category' ),
+			'rewrite'               => array( 'slug' => 'product-category' ),
 		);
 
 		register_taxonomy( 'pxp_product_categories', 'pxp_products', $args );
@@ -343,7 +352,7 @@ class PXP_Cpt
 		global $post_id;
 		
 		// If it is our form has not been submitted, so we dont want to do anything
-		if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 		
 		switch($data['post_type'])
 		{
@@ -354,6 +363,7 @@ class PXP_Cpt
 				break;
 			case 'pxp_adjustments':
 				$date = date( 'Y-m-d' );
+				
 				$data['post_title'] = "Credit Adjustment - " . $date;
 				$data['post_name'] 	= "credit-adjustment-" . $date;
 				break;
@@ -400,6 +410,27 @@ class PXP_Cpt
 	}
 	
 	/**
+	 * Hide add new button of custom post type.
+	 */
+	public function pxp_hide_add_new()
+	{
+		global $pagenow, $post, $submenu;
+
+		if( is_admin() )
+		{
+			unset($submenu['edit.php?post_type=pxp_orders'][10]);
+			
+			if($pagenow == 'edit.php' || $pagenow == 'post.php')
+			{
+				if( ( isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pxp_orders' ) || ( !empty( $post ) && $post->post_type == 'pxp_orders' )  )
+				{
+					echo '<style>.add-new-h2{display: none;} </style>';
+				}
+			}
+		}
+	}
+	
+	/**
 	 * CPT update messages.
 	 *
 	 * See /wp-admin/edit-form-advanced.php
@@ -436,6 +467,9 @@ class PXP_Cpt
 		{
 			case 'pxp_credit_blocks':
 				$messages[$post_type][1] = __($singular.' updated.');
+				break;
+			case 'pxp_adjustments':
+			
 				break;
 		}
 		

@@ -413,6 +413,45 @@ class PXP_Promo_Codes
 			update_post_meta( $post_id, '_' . $key, $value );
 		}
 	}
+	
+	/**
+	 * Check and apply promo code used by user.
+	 *
+	 * @param String $promo_code The promo code used for discount.
+	 * @return String
+	 */
+	public static function pxp_promo_codes_apply( $promo_code )
+	{
+		$args = array(
+			'posts_per_page'=> 1,
+			'post_type'		=> 'pxp_promo_codes',
+			'meta_key'		=> '_promo_code',
+			'meta_value'	=> $promo_code,
+			'meta_compare'	=> '='
+		);
+		
+		$promo_query = new WP_Query( $args ); 
+		
+		foreach( $promo_query->posts as $post )
+		{
+			$promo_id 		= get_post_meta( $post->ID, '_promo_id', true );
+			$promo_amount	= get_post_meta( $post->ID, '_promo_amount', true);
+			
+			$promo = array(
+				'ID'			=> $promo_id,
+				'promo_code'	=> $promo_code,
+				'amount'		=> $promo_amount,
+				'status'		=> 'applied'
+			);
+			
+			return $promo;
+		}
+		
+		wp_reset_query();
+		wp_reset_postdata();
+		
+		return 'not_found';
+	}
 }
 
 }

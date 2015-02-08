@@ -28,16 +28,14 @@ class PXP_Admin_Menus
 		
 		// Include files
 		include_once( 'admin/class-pxp-admin-core.php' );
-		
-		include_once( 'class-pxp-ajax.php' );
 	}
 	
 	/**
 	 * Add admin menus
 	 *
-	 * @param	global	$pxp_credits		Page hookname
-	 * @param	global	$pxp_orders			Page hookname
-	 * @param	global	$pxp_transactions	Page hookname
+	 * @var	global	$pxp_credits		Page hookname
+	 * @var	global	$pxp_orders			Page hookname
+	 * @var	global	$pxp_transactions	Page hookname
 	 *
 	 * @return	void
 	 */
@@ -49,9 +47,15 @@ class PXP_Admin_Menus
 		
 		$pxp_credits		= add_users_page( 'Credits', 'Credits', 'read', 'pxp-client-credits', array( $this, 'client_credits') );
 		
-		$pxp_orders			= add_users_page( 'Orders', 'Orders', 'read', 'pxp-client-orders', array( $this, 'client_order') );
+		$pxp_orders			= add_users_page( 'Orders', 'Orders', 'read', 'pxp-client-orders', array( $this, 'client_order'), 'dashicons-feedback' );
 		
-		$pxp_transactions 	= add_users_page( 'Transaction History', 'Transaction History', 'read', 'pxp-client-transactions', array( $this, 'client_transactions') );
+		$pxp_transactions 	= add_users_page( 'Transaction History', 'Transaction History', 'read', 'pxp-client-transactions', array( $this, 'client_transactions'), 'dashicons-portfolio' );
+		
+		$pxp_settings		= add_menu_page ( 'PXP Settings', 'PixelPartners', 'manage_options', 'pxp-settings', array( $this, 'plugin_settings' ) );
+		
+		add_submenu_page( 'pxp-settings', 'Settings', 'Settings', 'manage_options', 'pxp-settings', array( $this, 'plugin_settings' ) );
+		
+		//add_submenu_page( 'pxp-settings', 'PayPal Settings', 'PayPal Settings', 'manage_options', 'pxp-paypal-settings', array( $this, 'plugin_settings' ) );
 		
 		if( isset( $_GET['page'] ) ):
 			switch( $_GET['page'] )
@@ -145,6 +149,14 @@ class PXP_Admin_Menus
 		return $status;
 	}
 	
+	/**
+	 * Init the Plugin Settings Page.
+	 */
+	public function plugin_settings()
+	{
+		PXP_Admin_Core::pxp_plugin_settings();
+	}
+
 	/**
 	 * Init the Clients Order Page.
 	 */

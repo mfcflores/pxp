@@ -22,6 +22,10 @@ class PXP_Clients
 
 	public function __construct()
 	{
+		include_once( 'class-pxp-client-credits.php' );
+		include_once( 'class-pxp-client-orders.php' );
+		include_once( 'class-pxp-client-transactions.php' );
+		
 		// Display custom fields in profile.
 		add_action('show_user_profile', array( $this, 'pxp_client_user_profile' ) );
 		add_action('edit_user_profile', array( $this, 'pxp_client_user_profile' ) );
@@ -54,6 +58,7 @@ class PXP_Clients
 		$pxp_corel			= get_user_meta( $user->ID, 'pxp_corel', true);
 		$pxp_other			= get_user_meta( $user->ID, 'pxp_other', true);
 		$pxp_other_desc		= get_user_meta( $user->ID, 'pxp_other_desc', true);
+		$pxp_acs_version	= get_user_meta( $user->ID, '_pxp_acs_version', true);
 		$pxp_professional_association	= get_user_meta( $user->ID, 'pxp_professional_association', true);
 		$pxp_marketing_design	= get_user_meta( $user->ID, 'pxp_marketing_design', true);
 		
@@ -154,9 +159,19 @@ class PXP_Clients
 				<td>
 					<input <?php echo ( $pxp_adobe == true ) ? "checked" : ""; ?> type="checkbox" name="pxp_adobe" id="pxp_adobe" value="adobe" />
 					<span><?php _e( 'Adobe' ); ?></span><br>
+					<input <?php echo ( $pxp_corel == true ) ? "checked" : ""; ?> type="checkbox" name="pxp_corel" id="pxp_corel" value="adobe" />
+					<span><?php _e( 'Corel' ); ?></span><br>
 					<input <?php echo ( $pxp_other == true ) ? "checked" : ""; ?> type="checkbox" name="pxp_other" id="pxp_other" value="other" />
 					<span><?php _e( 'Other' ); ?></span>
 					<input type="text" name="pxp_other_desc" id="pxp_other_desc" value="<?php echo ( $pxp_other == true ) ? $pxp_other_desc : ""; ?>" class="regular-text" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="pxp_acs_version"><?php _e( 'Adobe Creative Suit Version' ); ?></label>
+				</th>
+				<td>
+					<input type="text" name="pxp_acs_version" id="pxp_acs_version" value="<?php echo $pxp_acs_version; ?>" class="regular-text" />
 				</td>
 			</tr>
 			<tr>
@@ -201,8 +216,10 @@ class PXP_Clients
 			'pxp_country'					=> sanitize_text_field( $_POST['pxp_country'] ),
 			'pxp_operating_system'			=> sanitize_text_field( $_POST['pxp_operating_system'] ),
 			'pxp_adobe'						=> ( isset( $_POST['pxp_adobe'] ) ) ? 1 : 0,
+			'pxp_corel'						=> ( isset( $_POST['pxp_corel'] ) ) ? 1 : 0,
 			'pxp_other'						=> ( isset( $_POST['pxp_other'] ) ) ? 1 : 0,
 			'pxp_other_desc'				=> sanitize_text_field( $_POST['pxp_other_desc'] ),
+			'pxp_acs_version'				=> sanitize_text_field( $_POST['pxp_acs_version'] ),
 			'pxp_professional_association'	=> esc_textarea( $_POST['pxp_professional_association'] ),
 			'pxp_marketing_design'			=> sanitize_text_field( $_POST['pxp_marketing_design'] )
 		);
@@ -218,78 +235,7 @@ class PXP_Clients
 	 */
 	public static function pxp_client_credits()
 	{
-		global $user_ID;
-		
-		$current_credits = get_user_meta( $user_ID, 'pxp_user_credits', true );
-		
-		$args = array(
-			'posts_per_page'	=> -1,
-			'post_type'			=> 'pxp_credit_blocks',
-			'order'				=> 'ASC',
-			'orderby'			=> 'meta_value_num',
-			'meta_key'			=> '_credit_amount'
-		);
-		
-		$query = new WP_Query( $args );
-?>
-		<div id="pxp-credits-page">
-			<div class="pxp-credit-box">
-				<div class="pxp-credit-column50">
-					<h1>Purchase Credits</h1>
-				</div>
-				<div class="pxp-credit-column50 text-right">
-					<h3 style="margin-right:15px;">Remaining Balance:&nbsp;<span class="text-red">12345</span> Credits</h3>
-				</div>
-			</div>
-			<div class="pxp-credit-box">
-				<h4>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. Quisque odio enim, vulputate in felis vel, tincidunt rutrum ex.  Praesent finibus orci non turpis suscipit ornare.
-				</h4>
-			</div>
-			<div class="pxp-credit-box text-center">
-			<?php
-				global $post;
-				
-				if( $query->have_posts() ) :
-					while( $query->have_posts() ) :
-						$query->the_post();
-						
-						$post_id		= $post->ID;
-						$credit_price 	= get_post_meta( $post_id, '_credit_price', true);
-						$credit_amount 	= get_post_meta( $post_id, '_credit_amount', true);
-						$credit_bonus	= get_post_meta( $post_id, '_credit_bonus', true);
-						$credit_icon	= get_the_post_thumbnail( $post_id, 'post-thumbnail' );						
-						
-						$total_credit	= $credit_amount + ( $credit_amount * ( $credit_bonus/100 ) );
-			?>
-						<div class="pxp-credit">
-							<div class="row">
-								<h3>[<?php _e( $total_credit . ' Credits' ); ?>]</h3>
-								<div class="credit-icon"><?php echo $credit_icon; ?></div>
-							</div>
-							<div id="content" class="row">
-								<p><?php _e( '$' . $credit_price ); ?></p>
-								<p><?php _e( $credit_amount . ' Credits' ); ?></p>
-								<p><?php _e( '+' . $credit_bonus . '% Credits' ); ?></p>
-							</div>
-							<div id="btn" class="row">
-								<button type="button" id="credit-block-<?php echo $post_id; ?>" value="<?php echo $post_id; ?>" class="btn">Buy</button>
-							</div>
-						</div>
-			<?php
-					endwhile;
-				endif;
-			?>
-			</div>
-			<div class="pxp-credit-box">
-				<h4>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. Quisque odio enim, vulputate in felis vel, tincidunt rutrum ex. Quisque fringilla accumsan sapien nec gravida. 
-				</h4>
-			</div>
-
-			<div class="clearfix"></div>
-		</div>
-<?php
+		PXP_Client_Credits::output();
 	}
 	
 	/**
@@ -297,241 +243,15 @@ class PXP_Clients
 	 */
 	public static function pxp_client_orders()
 	{
-		$order_id = ( isset( $_GET['order'] ) ) ? $_GET['order'] : NULL;
-?>
-		<div class="wrap">
-<?php
-		if( $order_id != NULL ):
-			// Output client order details
-			self::pxp_client_order_details( $order_id );
-		else:
-			// Output client orders list.
-			self::pxp_client_orders_list();
-		endif;
-?>
-		</div>
-<?php
+		PXP_Client_Orders::output();
 	}
-
-	/**
-	 * Display Client Order List.
-	 */
-	public static function pxp_client_orders_list()
-	{
-		global $My_WP_List_Table;
-		
-		$search = ( isset( $_POST['s'] ) ) ? $_POST['s'] : NULL;
-		
-		$orders = array(
-			array(
-				'ID'			=> 1,
-				'order_date'	=> 'Sample',
-				'order_total'	=> '2',
-				'order_status'	=> 'Ordered'
-			),
-			array(
-				'ID'			=> 2,
-				'order_date'	=> 'Sample 2',
-				'order_total'	=> '1',
-				'order_status'	=> 'Cancelled'
-			)
-		);
-		
-		// Set the orders to the table list.
-		$My_WP_List_Table->set_item_list( $orders );
-		
-		// Fetch, prepare, sort, and filter our data.
-		$My_WP_List_Table->prepare_items();
-?>
-		<div id="icon-users" class="icon32"><br/></div>
-		<h2>
-			<?php _e('Orders'); ?>
-			<a class="add-new-h2" id="pxp-client-add-order" href="<?php echo admin_url('users.php?page=pxp-client-orders'); ?>">Add New Order</a>
-		</h2>
-			
-		<ul class="subsubsub">
-			<li>
-				<a <?php echo ($search == NULL) ? 'class="current"' : NULL; ?> href="<?php echo '?page=' . $_REQUEST['page']; ?>">
-					<?php _e( 'All' ); ?> <span class="count">(<span id="all_count">0</span>)</span>
-				</a>
-			</li>
-		</ul>
-		
-		<!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
-		<form id="pxp_client_order_filter" method="POST">
-			<!-- For plugins, we also need to ensure that the form posts back to our current page -->
-			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-			
-			<?php $My_WP_List_Table->search_box( 'search', 'search_id' ) ?>
-			
-			<?php $My_WP_List_Table->display() ?>
-		</form>
-<?php
-	}
-	
-	/**
-	 * Display Client Order Details
-	 * @param	int	$order_id	Order done by client.
-	 */
-	public static function pxp_client_order_details( $order_id )
-	{
-		$order_id = ( isset( $_GET['order'] ) ) ? $_GET['order'] : NULL;
-
-
-?>
-		<div class="pxp-credit-box">
-				<h2>
-					<?php _e( 'Order Number:  ' ); _e( $order_id );?>
-				</h2>
-		</div>
-		<div class="pxp-credit-box">
-				<h4>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare. 
-				</h4>
-		</div>
-		<div class="pxp-order">
-			<div class="pxp-credit-box">
-				<div class="row">
-					<h3><?php _e( 'General Details: '); ?></h3>
-				</div>
-				<div class="row">
-					<table class="form-table pxp_orders">
-						<tbody>
-							<tr valign="top">
-								<th><?php _e( 'Order Date:' ); ?></th>
-								<td><?php _e( '12/25/2017' ); ?></td>
-							</tr>
-							<tr valign="top">
-								<th><?php _e( 'Order Status:' ); ?></th>
-								<td><?php _e( 'Ordered' ); ?></td>
-							</tr>
-							<tr valign="top">
-								<th><?php _e( 'Customer:' ); ?></th>
-								<td><?php _e( 'Cookie Monster' ); _e( ' (Sesame Inc.)' ); ?></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="row">
-					<h3><?php _e( 'Billing Details: '); ?></h3>
-				</div>
-				<div class="row">
-					<table class="form-table pxp_orders">
-						<tbody>
-							<tr valign="top">
-								<th><?php _e( 'PayPal Email:' ); ?></th>
-								<td><?php _e( 'cookiepaypal@mail.com' ); ?></td>
-							</tr>
-							<tr valign="top">
-								<th><?php _e( 'Phone:' ); ?></th>
-								<td><?php _e( '222-7788' ); ?></td>
-							</tr>
-							<tr valign="top">
-								<th><?php _e( 'PO No:' ); ?></th>
-								<td><?php _e( '247-88754' ); ?></td>
-							</tr>
-							<tr valign="top">
-								<th><?php _e( 'Address:' ); ?></th>
-								<td><?php _e( 'Sesame Street, Davao City' ); ?></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div><br>
-		<div class="pxp-order">
-			<div class="pxp-credit-box">
-				<div class="row">
-					<h3><?php _e( 'Order Items: '); ?></h3>
-				</div>
-				<div class="row">
-					<table class="form-table pxp_orders">
-						<tbody>
-							<th>Item</th>
-							<th>Job Reference</th>
-							<th>Price</th>
-						</tbody>
-						<tr>
-							<td>Photo Icon</td>
-							<td>Sample Job</td>
-							<td>$150</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-
-
-<?php
-		}
 	
 	/**
 	 * Display Client Transaction History Page.
 	 */
 	public static function pxp_client_transactions()
 	{
-		$transaction_id = ( isset( $_GET['transaction'] ) ) ? $_GET['transaction'] : NULL;
-?>
-		<div class="wrap">
-<?php
-		if( $transaction_id != NULL ):
-			// Output client transactions details
-			self::pxp_client_transaction_details( $transaction_id );
-		else:
-			// Output client transactions list.
-			self::pxp_client_transactions_list();
-		endif;
-?>
-		</div>
-<?php
-	}
-	
-	/**
-	 * Display Client Transaction History Page.
-	 */
-	public static function pxp_client_transactions_list()
-	{
-		global $My_WP_List_Table;
-		
-		$transactions = array(
-			array(
-				'ID'						=> 1,
-				'transaction_description'	=> 'Quisque fringilla accumsan sapien nec gravida. ',
-				'transaction_date'			=> 'Sample',
-			),
-			array(
-				'ID'						=> 2,
-				'transaction_description'	=> 'Praesent finibus orci non turpis suscipit ornare.',
-				'transaction_date'			=> 'Sample 2',
-			)
-		);
-		
-		// Set the transactions to the table list.
-		$My_WP_List_Table->set_item_list( $transactions );
-		
-		// Fetch, prepare, sort, and filter our data.
-		$My_WP_List_Table->prepare_items();
-?>
-		<div>
-			<h2>Transaction History</h2>
-		<div>
-		<div>
-			<h4>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent finibus orci non turpis suscipit ornare.
-			</h4>
-		</div>
-
-<?php 
-		$My_WP_List_Table->display();	
-	}
-	
-	/**
-	 * Display Client Transaction Details
-	 * @param	int	$transcation	Transactions done by client.
-	 */
-	public static function pxp_client_transaction_details( $transaction_id )
-	{
-		echo $transaction_id;
+		PXP_Client_Transactions::output();
 	}
 }
 

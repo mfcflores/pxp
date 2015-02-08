@@ -24,7 +24,7 @@ class PXP_Install
 		register_activation_hook( PXP_FILE, array( $this, 'pxp_install' ) );
 		
 		// Run function on plugin deactivation.
-		register_deactivation_hook( PXP_FILE, array( $this, 'remove_roles_on_plugin_deactivation' ) );
+		register_deactivation_hook( PXP_FILE, array( $this, 'pxp_deactivate' ) );
 	
 		// Show action lins in plugin page.
 		add_filter( 'plugin_action_links_' . PXP_PLUGIN_BASENAME, array( $this, 'plugin_action_links' ) );
@@ -46,11 +46,21 @@ class PXP_Install
 	}
 	
 	/**
+	 * Run functions on deactivation.
+	 */
+	public function pxp_deactivate()
+	{
+		// Remove caps and roles.
+		//$this->remove_roles_on_plugin_deactivation();
+	}
+	
+	/**
 	 * Add options on plugin activation.
 	 */
 	public function add_options_on_plugin_activation()
 	{
 		add_option( 'pxp_product_id', 1 );	// Set Product ID to 1.
+		add_option( 'pxp_order_id', 1 );	// Set Order ID to 1.
 		add_option( 'pxp_promo_id', 1 );	// Set Promo ID to 1. 
 		add_option( 'pxp_credit_block_id', 1 );	// Set Promo ID to 1. 
 	}
@@ -60,25 +70,34 @@ class PXP_Install
 	 */
 	public function add_roles_on_plugin_activation()
 	{
-		// Client
-		add_role( 'pxp_client',	__( 'Client' ),	array( 'read' => true ) );
+		global $wp_roles;
 		
-		// Project Manager
-		/**
-		 * Capabilities: 
-		 * - Add client at admin side
-		 * - View list of clients
-		 * - View Client Profile
-		 * - Create/Add product
-		 * - Edit Product
-		 * - View list of products
-		 * - Adjust client credits (refund/deduct credits)
-		 * - Send invoice to client (connected to xero.com?)
-		 */
-		add_role(
-			'pxp_project_manager',
-			__( 'Project Manager' ),
-			array(
+		if ( class_exists( 'WP_Roles' ) ) 
+		{
+			if ( ! isset( $wp_roles ) ) 
+			{
+				$wp_roles = new WP_Roles();
+			}
+		}
+		
+		if ( is_object( $wp_roles ) ) 
+		{
+			// Client
+			add_role( 'pxp_client',	__( 'Client' ),	array( 'read' => true ) );
+			
+			// Project Manager
+			/**
+			 * Capabilities: 
+			 * - Add client at admin side
+			 * - View list of clients
+			 * - View Client Profile
+			 * - Create/Add product
+			 * - Edit Product
+			 * - View list of products
+			 * - Adjust client credits (refund/deduct credits)
+			 * - Send invoice to client (connected to xero.com?)
+			 */
+			add_role( 'pxp_project_manager', __( 'Project Manager' ), array(
 				'read'			=> true, 
 				'create_users'	=> true,	// Add Clients
 				'edit_users'	=> true, 	// Edit Clients
@@ -86,25 +105,92 @@ class PXP_Install
 				'publish_posts'	=> false,	// Add New Product
 				'edit_posts' 	=> false,	// Edit Product
 				'delete_posts'	=> false, 	// Use false to explicitly deny
-			)
-		);		
-		
-		// Product Author
-		/**
-		 * Capabilities:
-		 * - Add / Edit Products
-		 */
-		add_role(
-			'pxp_product_author',
-			__( 'Product Author' ),
-			array(
+			) );		
+			
+			// Product Author
+			/**
+			 * Capabilities:
+			 * - Add / Edit Products
+			 */
+			add_role( 'pxp_product_author',	__( 'Product Author' ),	array(
 				'read'			=> true,  
 				'publish_posts'	=> false, 	// Add Product
 				'edit_posts'	=> false,	// Edit Product	
 				'upload_files' 	=> true,	// Upload media files
 				'delete_posts'	=> false, 	// Use false to explicitly deny
-			)
-		);
+			) );
+		}
+	}
+	
+	/**
+	 * Get capabilities for PixelPartners.
+	 *
+	 * @return array
+	 */
+	public function get_pxp_capabilities()
+	{
+		$capabilities = array();
+		
+		$capability_types = array( 'pxp_product', 'pxp_order', 'pxp_credit_block', 'pxp_promo_code', 'pxp_adjustment' );
+		
+		foreach( $capability_types as $capability_type )
+		{
+			$capabilities[ $capability_type ] = array(
+				'read_' . $capability_type,
+				'read_private_' . $capability_type . 's',
+				'edit_' . $capability_type,
+				'edit_' . $capability_type . 's',
+				'edit_others_' . $capability_type .'s',
+				'edit_published_' . $capability_type  . 's',
+				'edit_private_' . $capability_type  . 's',
+				'publish_' . $capability_type .'s',
+				'delete_' . $capability_type,
+				'delete_' . $capability_type . 's',
+				'delete_others_' . $capability_type . 's',
+				'delete_private_' . $capability_type . 's',
+				'delete_published_' . $capability_type . 's'
+			);
+		}
+		
+		return $capabilities;
+	}
+	
+	/**
+	 * Remove roles on plugin deactivation to modify or update capabilities.
+	 */
+	public function remove_roles_on_plugin_deactivation()
+	{
+		global $wp_roles;
+		
+		if ( class_exists( 'WP_Roles' ) ) 
+		{
+			if ( ! isset( $wp_roles ) ) 
+			{
+				$wp_roles = new WP_Roles();
+			}
+		}
+		
+		if ( is_object( $wp_roles ) ) 
+		{
+			$capabilities = $this->get_pxp_capabilities();
+			
+			foreach( $capabilities as $key => $capability )
+			{
+				foreach( $capability as $cap )
+				{
+					if( $key == "pxp_product" ):
+						$wp_roles->remove_cap( 'pxp_product_author', $cap );
+					endif;
+					
+					$wp_roles->remove_cap( 'pxp_project_manager', $cap );
+					$wp_roles->remove_cap( 'administrator', $cap );
+				}
+			}
+			
+			remove_role( 'pxp_client' );
+			remove_role( 'pxp_project_manager' );
+			remove_role( 'pxp_product_author' );
+		}
 	}
 	
 	/**
@@ -123,10 +209,10 @@ class PXP_Install
 				'title'		=> 'Cart',
 				'content'	=> '[pxp_cart]'
 			),
-			'order'			=> array(
-				'name'		=> 'order',
-				'title'		=> 'Order',
-				'content'	=> '[pxp_order]'
+			'checkout'		=> array(
+				'name'		=> 'checkout',
+				'title'		=> 'Checkout',
+				'content'	=> '[pxp_checkout]'
 			),
 			'login'			=>array(
 				'name'		=> 'login', 
@@ -145,17 +231,7 @@ class PXP_Install
 			pxp_create_page( 'pxp_' . $key . '_page', $page['name'], $page['title'], $page['content'] );
 		}
 	}
-		
-	/**
-	 * Remove roles on plugin deactivation to modify or update capabilities.
-	 */
-	public function remove_roles_on_plugin_deactivation()
-	{
-		//remove_role('pxp_client');
-		//remove_role('pxp_project_manager');
-		//remove_role('pxp_product_author');
-	}
-	
+
 	/**
 	 * Show action links on the plugin page.
 	 *

@@ -35,6 +35,9 @@ class PXP_Admin_Assets
 		wp_register_script	( 'jquery-ui', PXP_URL . '/assets/js/jquery-ui.js');
 		wp_enqueue_script	( 'jquery-ui' );
 		
+		wp_register_script	( 'jquery-validation', PXP_URL . '/assets/js/jquery.validate.min.js');
+		wp_enqueue_script	( 'jquery-validation' );
+		
 		wp_register_script	( 'jquery-autocomplete', PXP_URL . '/assets/js/jquery.autocomplete.js');
 		wp_enqueue_script	( 'jquery-autocomplete' );
 		
@@ -59,7 +62,7 @@ class PXP_Admin_Assets
 		wp_register_script	( 'pxp-script', PXP_URL . '/assets/js/admin.js' );
 		wp_enqueue_script	( 'pxp-script' );
 		
-		
+		wp_localize_script	( 'pxp-script', 'admin_url', admin_url() );
 	}
 	
 	/**

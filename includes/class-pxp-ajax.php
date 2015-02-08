@@ -25,9 +25,12 @@ class PXP_Ajax
 		
 		// Get products frontend
 		add_action( 'wp_ajax_pxp_load_more_product', array( $this, 'pxp_load_more_product' ) );
-		add_action( 'wp_ajax_noprov_pxp_load_more_product', array( $this, 'pxp_load_more_product' ) );
+		add_action( 'wp_ajax_nopriv_pxp_load_more_product', array( $this, 'pxp_load_more_product' ) );
 	}
 	
+	/**
+	 * Get List of Products Ajax.
+	 */
 	public function pxp_get_products() 
 	{  
 		$products = array();
@@ -67,6 +70,9 @@ class PXP_Ajax
 		wp_die();
 	}
 	
+	/**
+	 * Load more products AJAX.
+	 */
 	public function pxp_load_more_product()
 	{
 		global $post, $pxp_products;
@@ -86,7 +92,9 @@ class PXP_Ajax
 			'posts_per_page' 	=> $per_product,
 			'post_type'   		=> 'pxp_products',
 			'post_status'  		=> 'publish',
-			'offset'			=> $offset
+			'offset'			=> $offset,
+			'order'				=> 'DESC',
+			'orderby'			=> 'date'
 		);
 		
 		$products = new WP_Query( $args );

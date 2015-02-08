@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
 		if(load_more_product)
 			return false;
 		
-		//load_more_product = true;
+		load_more_product = true;
 		
 		$.ajax({
 			url: ajaxurl,
@@ -22,11 +22,10 @@ jQuery(document).ready(function($) {
 				offset: product_offset
 			},
 			beforeSend: function() {
-			
 				$("#load_more").html('<i class="fa fa-refresh fa-spin"></i>');
 			},
 			success: function(data) {
-				//console.log(data);
+				console.log(data);
 				
 				product_offset = data[2];
 				
@@ -58,5 +57,32 @@ jQuery(document).ready(function($) {
 				height : 50
 			}
 		}
+	});
+	
+	$("#pxp-product-gallery").owlCarousel({
+		items : 3,
+		lazyLoad : true,
+		loop : true,
+		autoWidth : true
+	});
+	
+	$("button[name='pxp_add_to_cart']").click(function(e)  {
+		e.preventDefault();
+		
+		var post_id = $("input[name='add-to-cart']").val();
+
+		$.ajax({
+			url: ajaxurl,
+			data: {
+				action : 'pxp_ajax_add_cart',
+				post_id : post_id
+			},
+			dataType: "JSON",
+			type: "POST",
+			success: function(data) {
+				console.log(data);
+				window.location = data[0];
+			}
+		});
 	});
 });

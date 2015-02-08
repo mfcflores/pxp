@@ -126,4 +126,109 @@ if(!function_exists('get_delete_permanent_post_link')) :
 
 endif;
 
+if(!function_exists('pxp_encrypt_decrypt_key')) :
+	function pxp_encrypt_decrypt_key($action, $text)
+	{
+		include_once( 'class-encryption.php' );
+		
+		$encryption = new Encryption;
+		
+		switch($action)
+		{
+			case 'encrypt':
+				return $encryption->encode( $text );
+				break;
+			case 'decrypt':
+				return $encryption->decode( $text );
+				break;
+		}
+	}
+endif; 
+
+/**
+ * Return array list of countries.
+ */
+function get_countries()
+{
+	return include( PXP_FILE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'countries.php' );
+}
+
+/**
+ * Check if id exists.
+ *
+ * @param String $post_type The post type to check ID.
+ * @param String $key ID key.
+ * @param String $value ID value.
+ * @return bool
+ */
+function check_id_exists( $post_type, $key, $value )
+{
+	$args = array(
+		'posts_per_page'	=> 1,
+		'post_type'			=> $post_type,
+		'meta_key'			=> $key,
+		'meta_value'		=> $value,
+		'meta_compare'		=> '='
+	);
+	
+	$query = new WP_Query( $args );
+	
+	if( $query->found_posts > 0 )
+		return true;
+	else
+		return false;
+}
+
+/**
+ * Display notification message.
+ *
+ * @param string $action Notification to display.
+ */
+function pxp_admin_notification_message( $action )
+{
+	$message 	= "Something went wrong, please try again.";
+	$status 	= "error";
+	
+	switch( $action )
+	{
+		case 'updated_paypal':
+			$message 	= "PayPal Gateway Setting updated.";
+			$status 	= "updated";
+			break;
+		case 'credit_block_checkout_success':
+			$message 	= "Your transaction is successful.";
+			$status 	= "updated";
+			break;
+		case 'credit_block_checkout_cancelled':
+			$message 	= "Transaction has been cancelled.";
+			$status 	= "cancelled";
+			break;
+	}
+	
+	if( $action != "" ) :
+?>
+		<div id="message" class="<?php echo $status; ?> below-h2">
+			<p><?php _e( $message ); ?></p>
+		</div>
+<?php
+	endif;
+}
+
+/**
+ * Return session to array.
+ *
+ * @param string $key Array key for session to return.
+ * @return Array.
+ */
+function pxp_get_session( $key )
+{
+	global $pxp_session;
+	
+	if( isset( $pxp_session['credit_blocks_checkout'] ) ):
+		return $pxp_session['credit_blocks_checkout']->toArray();
+	endif;
+	
+	return false; 
+}
+
 ?>

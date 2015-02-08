@@ -21,11 +21,12 @@ class PXP_Orders
 	public function __construct()
 	{
 		// Add Actions
-		add_action('manage_pxp_orders_posts_custom_column', array($this, 'pxp_orders_posts_custom_column'), 10, 2);
+		add_action( 'admin_init', array( $this, 'pxp_orders_admin_init' ) );
+		add_action( 'manage_pxp_orders_posts_custom_column', array( $this, 'pxp_orders_posts_custom_column' ), 10, 2 );
 		
 		// Add Filters
-		add_filter('manage_edit-pxp_orders_columns', array($this, 'pxp_set_custom_edit_pxp_orders_columns'));
-		add_filter('manage_edit-pxp_orders_sortable_columns', array($this, 'pxp_edit_orders_sortable_columns'));
+		add_filter( 'manage_edit-pxp_orders_columns', array( $this, 'pxp_set_custom_edit_pxp_orders_columns' ) );
+		add_filter( 'manage_edit-pxp_orders_sortable_columns', array( $this, 'pxp_edit_orders_sortable_columns' ) );
 	}
 	
 	/**
@@ -47,6 +48,23 @@ class PXP_Orders
 		);
 		
 		return $columns;
+	}
+	
+	/**
+	 * Initialize admin init for orders
+	 */
+	public function pxp_orders_admin_init()
+	{
+		// Update Order Status.
+		if( isset( $_REQUEST['post_type'] ) && $_REQUEST['post_type'] == "pxp_orders"  && isset( $_REQUEST['id'] ) && isset( $_REQUEST['change_status'] ) ):
+			$post_id = $_REQUEST['id'];
+			$status = $_REQUEST['change_status'];
+
+			update_post_meta( $post_id, '_order_status', $status);
+			
+			wp_redirect( admin_url( 'edit.php?post_type=pxp_orders' ) );
+			exit();
+		endif;
 	}
 	
 	/**
@@ -104,28 +122,48 @@ class PXP_Orders
 				$last_name 	= $user_info->last_name;
 				$contact_name	= $first_name . ' ' . $last_name;
 		
+				// Temporary
+				$contact_name = get_post_meta( $post_id, '_contact_name', true );
+		
 				printf( __( '%s', '%s' ), $contact_name );
 				break;
 			case 'company_name':
 				$user_id 		= get_post_meta( $post_id, '_user_id', true );
 				$company_name	= get_user_meta( $user_id, 'pxp_company_name', true );
 				
+				// Temporary
+				$company_name = get_post_meta( $post_id, '_company_name', true );
+				
 				printf( __( '%s', '%s' ), $company_name );
 				break;
 			case 'order_date':
-				$order_date 	= get_post_meta( $post_id, '_order_date', true);
+				$order_date	= get_post_meta( $post_id, '_order_date', true);
+				
+				$order_date	= ( $order_date != NULL ) ? date( 'F j, Y g:i A', strtotime( $order_date ) ) : '-';
 				
 				printf( __( '%s', '%s' ), $order_date );				
 				break;
 			case 'order_total':
 				$order_total = get_post_meta( $post_id, '_order_total', true );
 				
-				printf( __( '%s', '%s' ), $order_total );
+				$order_total = ( $order_total != NULL ) ? number_format( $order_total ) : 0;
+				
+				printf( __( '%s Credits', '%s' ), $order_total );
 				break;
 			case 'order_status':
 				$order_status = get_post_meta( $post_id, '_order_status', true );
 				
-				printf( __( '%s', '%s' ), $order_status );
+				$statuses = array( 'Complete', 'Processing', 'Cancelled' );
+				$status = "<select class='admin-order_status' name='order_status' data-post-id='{$post_id}'>";
+						
+				foreach( $statuses as $value ):
+					$selected = ( $order_status == $value ) ? "selected" : "";
+					$status .= "<option {$selected} value='{$value}'>{$value}</option>";
+				endforeach;
+				
+				$status .= "</select>";
+				
+				printf( __( '%s' ), $status );
 				break;
 		}
 	}
@@ -155,14 +193,14 @@ class PXP_Orders
 		global $post_id;
 		
 		$order_date 	= get_post_meta( $post_id, '_order_date', true);
+		$order_date	= ( $order_date != NULL ) ? date( 'F j, Y g:i A', strtotime( $order_date ) ) : '-';
 		$order_status 	= get_post_meta( $post_id, '_order_status', true);
 		
 		$user_id = get_post_meta( $post_id, '_user_id', true );
 		$user_info 	= get_userdata( $user_id );
-		$first_name	= ( $user_id ) ? $user_info->first_name : "";
-		$last_name 	= ( $user_id ) ? $user_info->last_name  : "";
-		$contact_name	= $first_name . ' ' . $last_name;
-		$company_name	= get_user_meta( $user_id, 'pxp_company_name', true );
+
+		$contact_name = get_post_meta( $post_id, '_contact_name', true );
+		$company_name = get_post_meta( $post_id, '_company_name', true );
 		$customer 		= ( $user_id ) ? $contact_name . ' (' . $company_name . ')' : "";
 ?>
 		<table class="form-table pxp_orders">
@@ -191,17 +229,24 @@ class PXP_Orders
 	{
 		global $post_id;
 		
-		$paypal_email 	= get_post_meta( $post_id, '_paypal_email', true);
+		$user_id = get_post_meta( $post_id, '_user_id', true );
+		$phone	= get_user_meta( $user_id, 'phone', true );
+		
+		$email 	= get_post_meta( $post_id, '_email', true);
+		$country = get_post_meta( $post_id, '_country', true);
+		$countries = get_countries();
+		$country = ( $country != NULL) ? $countries[$country] : "-";
+		
 ?>
 		<table class="form-table pxp_orders">
 			<tbody>
 				<tr valign="top">
 					<th><?php _e( 'PayPal Email:' ); ?></th>
-					<td><?php _e( $paypal_email ); ?></td>
+					<td><?php _e( $email ); ?></td>
 				</tr>
 				<tr valign="top">
 					<th><?php _e( 'Phone:' ); ?></th>
-					<td><?php _e( '' ); ?></td>
+					<td><?php _e( $phone ); ?></td>
 				</tr>
 				<tr valign="top">
 					<th><?php _e( 'PO No:' ); ?></th>
@@ -209,7 +254,7 @@ class PXP_Orders
 				</tr>
 				<tr valign="top">
 					<th><?php _e( 'Address:' ); ?></th>
-					<td><?php _e( '' ); ?></td>
+					<td><?php _e( $country ); ?></td>
 				</tr>
 			</tbody>
 		</table>
@@ -219,8 +264,64 @@ class PXP_Orders
 	/**
 	 * Display Ordered Items metabox.
 	 */
-	public static function pxp_orders_items_box()
+	public static function pxp_orders_items_box( $post )
 	{
+		$post_id = $post->ID;
+		
+		$orders = get_post_meta( $post_id, '_orders', true );
+		$company_name = get_post_meta( $post_id, '_company_name', true );
+		
+		if( $orders != NULL || !empty( $orders ) ) :
+?>
+		<table class="form-table pxp_orders">
+			<thead>
+				<tr valign="top">
+					<th></th>
+					<td><strong><?php _e( 'Job Reference' ); ?></strong></td>
+					<td><strong><?php _e( 'Price' ); ?></strong></td>
+				</tr>
+			</thead>
+			<tbody>
+<?php
+			foreach( $orders as $order )
+			{
+				$thumbnail 	= $order['post_id'];
+				$price 		= $order['price'];
+				$price		= ( $price != NULL ) ? number_format( $price ) : NULL;
+				
+				if( has_post_thumbnail( $thumbnail ) ): 
+					$featured_img_url 	= wp_get_attachment_url( get_post_thumbnail_id( $thumbnail ), 'thumbnail' ); 
+					$featured_img_title	= get_the_title( get_post_thumbnail_id( $thumbnail ) );
+				endif;
+?>
+				<tr id="prodict-<?php echo $order['ID']; ?>" class="item <?php echo $order['post_id']; ?>" valign="top">
+					<th class="thumbnail">
+					<?php if( has_post_thumbnail( $thumbnail ) ): ?>
+						<img width="150" height="150" alt="<?php echo $featured_img_title; ?>" title="<?php echo $featured_img_title; ?>" src="<?php echo $featured_img_url; ?>" />
+					<?php endif; ?>
+					</th>
+					<td class="job-reference">
+						<p><?php _e( 'Icon set for ' . $company_name ); ?></p>
+						<p><strong><?php _e( 'Product Name' ); ?></strong> : <?php _e( $order['name'] ); ?></p>
+					<?php 
+						if( $order['gform'] != NULL ) :
+							foreach( $order['gform']['entry'] as $field ):
+								echo '<p><strong>' . $field['label'] . '</strong> : ' . $field['value'] . '</p>';
+							endforeach;
+						endif; 
+					?>
+					</td>
+					<td class="product-price"><?php _e( $price . ' Credits' ); ?></td>
+				</tr>
+<?php
+			}
+?>
+			</tbody>
+		</table>
+<?php
+		else:
+			echo 'No item was ordered.';
+		endif;
 	}
 }
 

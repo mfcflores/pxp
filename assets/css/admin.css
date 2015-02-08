@@ -37,8 +37,6 @@
 	width: 100%;
 }
 
-
-
 .pxp-credit {
 	float: left;
 	width: 29%;
@@ -179,6 +177,7 @@
 	height: auto;
 }
 
+label.error,
 .text-red {
 	color: #E14D43;
 }
@@ -225,7 +224,6 @@
 	bottom: 0px;
 	background: #F5F5F5;
 	border-right: 1px solid #EEE;
-	/*width: 15%;*/
 	width: 20%;
 }
 
@@ -270,10 +268,9 @@
 }
 
 .pxp-tabs .ui-tabs-panel {
-	/*width: 85%;*/
 	width: 80%;
 	min-height: 15em;
-	padding: 0px 20px;
+	padding: 0px 20px !important;
 }
 
 .pxp-tabs .ui-tabs-panel .form-table {
@@ -307,7 +304,7 @@ ul.search-list-container li.search-list {
 }
 
 ul.search-list-container li.search-box {
-	margin: 5px 0px 3px 5px;
+	margin: 5px 3px;
 }
 
 ul.search-list-container li.search-box input,
@@ -392,8 +389,15 @@ ul.category-list li:hover {
 	width: 100%;
 	border: 1px solid #777;
 	border-radius: 5px;
-	/*margin-right: 20px;
-	margin-left: 20px;*/
 	margin-top: 7px; 
 	background-color: #FFFFFF;
 }
+
+.form-table.pxp_orders tr.item th.thumbnail {
+	padding: 20px 0px;
+	text-align: center;
+} 
+
+.form-table.pxp_orders tr.item td {
+	vertical-align: top;
+} 

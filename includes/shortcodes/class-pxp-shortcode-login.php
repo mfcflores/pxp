@@ -24,7 +24,7 @@ class PXP_Shortcode_Login
 	
 	public static function output( $atts )
 	{
-		pxp_get_template( 'class-pxp-template-login.php' );
+		pxp_get_template( 'pxp-template-login.php' );
 	}
 }
 

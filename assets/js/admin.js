@@ -1,13 +1,20 @@
 jQuery(document).ready(function($) {
 	
+	$(".validate").validate();
 	
 	$(".datepicker").datepicker({
 		dateFormat: 'mm/dd/yy'
 	});
 
+	$(".number").ForceNumericOnly();
+	
+	$("#post").validate();
+	
 	$( "#pxp-tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 	$( "#pxp-tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-		
+	
+	$(".tooltip").tooltip();
+	
 	/**
 	 * Add image to product gallery.
 	 */
@@ -103,6 +110,14 @@ jQuery(document).ready(function($) {
 		$(this).parent().remove();
 	});
 	
+	$(".admin-order_status").change(function(e) {
+		var status = $(this).val();
+		
+		var post_id 	= $(this).data('post-id'); 
+		var pxp_order 	= admin_url + "edit.php?post_type=pxp_orders&id=" + post_id + "&change_status=" + status;
+		
+		window.location = pxp_order;
+	});
 	
 	// Get Products
 	var products = product_list();
@@ -216,6 +231,63 @@ jQuery(document).ready(function($) {
 	 
 		return strength;
 	}
+	
+	(function($) {
+		$.fn.setCursorPosition = function(pos) {
+			if ($(this).get(0).setSelectionRange) {
+				$(this).get(0).setSelectionRange(pos, pos);
+			} else if ($(this).get(0).createTextRange) {
+				var range = $(this).get(0).createTextRange();
+				range.collapse(true);
+				range.moveEnd('character', pos);
+				range.moveStart('character', pos);
+				range.select();
+			}
+		}
+	}(jQuery));
 });
+
+// Numeric only control handler
+jQuery.fn.ForceNumericOnly = function() {
+  return this.each(function()
+  {
+  jQuery(this).keydown(function(e)
+  {
+    var key = e.charCode || e.keyCode || 0;
+    // allow backspace, tab, delete, arrows, numbers
+          // and keypad numbers ONLY
+    return (
+      key == 8 ||
+      key == 9 ||
+      key == 46 ||
+      (key >= 37 && key <= 40) ||
+      (key >= 48 && key <= 57) ||
+      (key >= 96 && key <= 105));
+  });
+  });
+};// JavaScript Document
+
+function number_format (number, decimals, dec_point, thousands_sep) {
+	number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+	var n = !isFinite(+number) ? 0 : +number,
+	prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+	sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+	dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+	s = '',
+	toFixedFix = function (n, prec) {
+		var k = Math.pow(10, prec);
+		return '' + Math.round(n * k) / k;
+	};
+	// Fix for IE parseFloat(0.55).toFixed(0) = 0;
+	s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+	if (s[0].length > 3) {
+		s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+	}
+	if ((s[1] || '').length < prec) {
+		s[1] = s[1] || '';
+		s[1] += new Array(prec - s[1].length + 1).join('0');
+	}
+	return s.join(dec);
+}
 
 

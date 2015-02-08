@@ -23,11 +23,9 @@ class PXP_Shortcodes
 		$shortcodes = array(
 			'registration'		=> __CLASS__ . '::registration',
 			'cart'				=> __CLASS__ . '::cart',
-			'order'				=> __CLASS__ . '::order',
+			'checkout'			=> __CLASS__ . '::checkout',
 			'login'				=> __CLASS__ . '::login',
 			'search'			=> __CLASS__ . '::search',
-			'product'			=> __CLASS__ . '::product',
-			'selected_product'	=> __CLASS__ . '::selected_product'
 		);
 		
 		foreach( $shortcodes as $shortcode => $function )
@@ -49,9 +47,9 @@ class PXP_Shortcodes
 		return PXP_Shortcode_Cart::output( $atts );
 	}
 	
-	public static function order( $atts, $contents = '' )
+	public static function checkout( $atts, $contents = '' )
 	{
-		return PXP_Shortcode_Order::output( $atts );
+		return PXP_Shortcode_Checkout::output( $atts );
 	}
 	
 	public static function login( $atts, $contents = '' )
@@ -62,16 +60,6 @@ class PXP_Shortcodes
 	public static function search( $atts, $contents = '' )
 	{
 		return PXP_Shortcode_Search::output( $atts );
-	}
-	
-	public static function product( $atts, $contents = '' )
-	{
-		return PXP_Shortcode_Product::output( $atts );
-	}
-	
-	public static function selected_product( $atts, $contents = '' )
-	{
-		return PXP_Shortcode_Selected_Product::output( $atts );
 	}
 }
 
